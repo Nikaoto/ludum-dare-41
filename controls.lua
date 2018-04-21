@@ -52,7 +52,11 @@ end
 --[[ Callbacks ]]
 function controls.mousepressed(x, y, button)
   if button == 1 then
-    player.sword:swing(x, y, player.sword:get_rotation())
+    -- Swing sword
+    local aim_angle = lume.angle(player:getX(), player:getY(), x, y) -- Direction of slash
+    local sx, sy = lume.vector(aim_angle, Slash.DISTANCE) -- Slash in front of player
+    local rot = lume.random(3.14) -- Slash sprite rotation
+    player.sword:swing(player:getX() + sx, player:getY() + sy, rot)
   end
 end
 

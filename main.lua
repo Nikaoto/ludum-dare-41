@@ -2,6 +2,7 @@ Object = require "lib/classic"
 lume = require "lib/lume"
 anim8 = require "lib/anim8"
 Timer = require "lib/Timer"
+shack = require "lib/shack"
 
 require "conf"
 require "controls"
@@ -12,8 +13,9 @@ require "obj/Player"
 
 function love.load()
   love.window.setMode(conf.window.width, conf.window.height)
-  player = Player()
+  shack:setDimensions(conf.window.width, conf.window.height)
 
+  player = Player()
   tile = {
     width = 75,
     height = 75,
@@ -22,6 +24,7 @@ function love.load()
 end
 
 function love.draw()
+  shack:apply()
   world.draw()
   player:draw()
   controls.draw_mouse()
@@ -29,6 +32,7 @@ function love.draw()
 end
 
 function love.update(dt)
+  shack:update(dt)
   controls.update(dt)
   player:update(dt)
 end

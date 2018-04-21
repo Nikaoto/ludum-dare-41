@@ -6,10 +6,10 @@ local ROTATION_MOD = math.pi*1.2
 local fallback_sprite = love.graphics.newImage("res/sword.png")
 
 --[[ Utils ]]
-local get_random_tilt = function()
-  local upper = 0.9
-  local lower = 0.1
-  if lume.random(2) <= 1 then
+local get_random_tilt = function(prev_tilt)
+  local upper = math.pi * 0.8
+  local lower = math.pi * 0.5
+  if prev_tilt > 0 then
     return lume.random(-upper, -lower) 
   else
     return lume.random(lower, upper)
@@ -44,15 +44,17 @@ function Sword:update(dt)
 end
 
 function Sword:swing(x, y, rot)
-  self.tilt = get_random_tilt()
-
   self.swinging = true
-  self.slash = Slash(x, y, rot, function() self.swinging = false end)
+  self.tilt = get_random_tilt(self.tilt)
+
+  self.slash = Slash(x, y, rot, function() 
+    self.swinging = false
+  end)
 end
 
 --
 function Sword:set_rotation(rot)
-  self.rot = rot + self.tilt * ROTATION_MOD
+  self.rot = rot + self.tilt
 end
 
 function Sword:get_rotation()
