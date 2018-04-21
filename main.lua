@@ -12,15 +12,20 @@ require "obj/Sword"
 require "obj/Player"
 
 function love.load()
-  love.window.setMode(conf.window.width, conf.window.height)
+  conf.load()
+
   shack:setDimensions(conf.window.width, conf.window.height)
 
   player = Player()
   tile = {
-    width = 75,
-    height = 75,
+    width = 100,
+    height = 100,
     sprite = love.graphics.newImage("res/tile.jpg")
   }
+  tile.actual_height = tile.sprite:getHeight()
+  tile.actual_width = tile.sprite:getWidth()
+  tile.scale_x = tile.width / tile.actual_width
+  tile.scale_y = tile.height / tile.actual_height
 end
 
 function love.draw()
