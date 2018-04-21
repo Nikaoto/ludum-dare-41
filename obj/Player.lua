@@ -4,7 +4,6 @@ Player = Object:extend()
 function Player:getX() return self.x - self.ox end
 function Player:getY() return self.y - self.oy end
 
---function Player:getCenter() return self.x + self.ox end
 --[[ Constructor ]]
 function Player:new()
   self.x = 100

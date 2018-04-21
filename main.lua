@@ -6,6 +6,7 @@ Timer = require "lib/Timer"
 require "conf"
 require "controls"
 require "world"
+require "obj/Slash"
 require "obj/Sword"
 require "obj/Player"
 

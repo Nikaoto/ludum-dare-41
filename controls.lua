@@ -52,7 +52,7 @@ end
 --[[ Callbacks ]]
 function controls.mousepressed(x, y, button)
   if button == 1 then
-    player.sword:swing()
+    player.sword:swing(x, y, player.sword:get_rotation())
   end
 end
 
