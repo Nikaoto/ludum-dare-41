@@ -8,7 +8,7 @@ CROSSHAIR_SEGMENTS = 8
 --[[ Variables ]]
 dx = 0
 dy = 0
-speed = 400
+speed = 450
 
 --[[ Utils ]]
 local isDown = function(key) return love.keyboard.isDown(key) end
@@ -37,6 +37,17 @@ function controls.update(dt)
     dx, dy = dx * DIAGONAL_MOVEMENT_MOD, dy * DIAGONAL_MOVEMENT_MOD
   end
   player:move(dx, dy)
+end
+
+--[[ Callbacks ]]
+function controls.mousepressed(x, y, button)
+  if button == 1 then
+    player.sword:swing()
+  end
+end
+
+function controls.mousereleased(x, y, button)
+  print("controls.mousereleased("..x..", "..y..", "..button..")")
 end
 
 --[[ Draw Mouse]]
