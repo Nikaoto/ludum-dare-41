@@ -13,8 +13,7 @@ speed = 450
 --[[ Utils ]]
 local isDown = function(key) return love.keyboard.isDown(key) end
 
---[[ Update ]]
-function controls.update(dt)
+function controls.movement(dt)
   dx, dy = 0, 0
    
   if isDown("w") then
@@ -39,6 +38,17 @@ function controls.update(dt)
   player:move(dx, dy)
 end
 
+function controls.aim(dt)
+  local mouse_x, mouse_y = love.mouse.getPosition()
+  player.sword:set_rotation(lume.angle(player:getX(), player:getY(), mouse_x, mouse_y))
+end
+
+--[[ Update ]]
+function controls.update(dt)
+  controls.movement(dt)
+  controls.aim(dt)
+end
+
 --[[ Callbacks ]]
 function controls.mousepressed(x, y, button)
   if button == 1 then
@@ -47,7 +57,7 @@ function controls.mousepressed(x, y, button)
 end
 
 function controls.mousereleased(x, y, button)
-  print("controls.mousereleased("..x..", "..y..", "..button..")")
+  --print("controls.mousereleased("..x..", "..y..", "..button..")")
 end
 
 --[[ Draw Mouse]]

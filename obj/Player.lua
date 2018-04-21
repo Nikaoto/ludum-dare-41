@@ -18,7 +18,7 @@ function Player:new()
 end
 
 function Player:update(dt)
-  
+  self.sword:update(dt)
 end
 
 function Player:draw()

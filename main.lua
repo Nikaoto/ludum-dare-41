@@ -1,11 +1,13 @@
 Object = require "lib/classic"
+lume = require "lib/lume"
+anim8 = require "lib/anim8"
+Timer = require "lib/Timer"
+
 require "conf"
 require "controls"
 require "world"
 require "obj/Sword"
 require "obj/Player"
-
-lume = require "lib/lume"
 
 function love.load()
   love.window.setMode(conf.window.width, conf.window.height)
@@ -42,4 +44,5 @@ end
 
 function love.mousereleased(x, y, button)
   controls.mousereleased(x, y, button)
+
 end
