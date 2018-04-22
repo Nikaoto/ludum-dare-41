@@ -6,6 +6,7 @@ Slash = Object:extend()
 --[[ Global Constants ]]
 Slash.SLASH_TIME = 0.21
 Slash.DISTANCE = 130
+Slash.SHAKE = 2
 Slash.spritesheet = love.graphics.newImage("res/slash.png")
 Slash.sheet_width = 960
 Slash.sheet_height = 384
@@ -15,7 +16,7 @@ Slash.grid = anim8.newGrid(Slash.sprite_size, Slash.sprite_size, Slash.sheet_wid
 Slash.animation = anim8.newAnimation(Slash.grid("1-5",1, "1-2",2), Slash.SLASH_TIME/7)
 Slash.scale = 0.8
 
-function Slash:new(x, y, rotation, callback)
+function Slash:new(x, y, rotation, shake, callback)
   self.x = x
   self.y = y
   self.rotation = rotation
@@ -23,7 +24,7 @@ function Slash:new(x, y, rotation, callback)
   self.active = true
 
   -- Shake stronger on collision
-  camera:shake(7, 0.5, 60)
+  camera:shake(shake or Slash.SHAKE, Slash.SLASH_TIME, 100)
 
   self.timer = Timer()
   self.timer:after(Slash.SLASH_TIME, function()

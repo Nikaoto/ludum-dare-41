@@ -16,7 +16,8 @@ function love.load()
   conf.load()
 
   camera = Camera()
-  camera:setFollowLerp(0.2)
+  camera:setFollowLerp(0.1)
+  camera:setFollowStyle("LOCKON")
 
   world.load()
 
@@ -34,7 +35,6 @@ end
 
 function love.update(dt)
   camera:update(dt)
-  local mx, my = love.mouse.getPosition()
   camera:follow(player.x, player.y)
   controls.update(dt)
   world.update(dt)

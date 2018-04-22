@@ -1,7 +1,7 @@
 Player = Object:extend()
 
 Player.DASH_DISTANCE = 220
-Player.DASH_TIME = 0.15
+Player.DASH_TIME = 0.25
 
 --[[ Utils ]]
 function Player:getX() return self.x - self.ox end
@@ -50,7 +50,7 @@ function Player:attack(mouse_x, mouse_y)
   -- Slash location relative to self
   local sx, sy = lume.vector(aim_angle, Slash.DISTANCE)
   -- Slash sprite rotation
-  local rot = lume.random(3.14)
+  local rot = lume.random(math.pi)
 
   self.sword:swing(self.x + sx, self.y + sy, rot)
 end
@@ -64,9 +64,9 @@ function Player:dash(mouse_x, mouse_y)
     -- Dash vector
     self.dash_x, self.dash_y = lume.vector(aim_angle, Player.DASH_DISTANCE)
     -- Dash final destination
-    local fx, fy = self.dash_x + self:getX(), self.dash_y + self:getY()
+    local fx, fy = self.dash_x + self.x, self.dash_y + self.y
     -- Start dash countdown
-    self.dash_timer:tween(Player.DASH_TIME, self, {x = fx, y = fy}, "out-cubic", function()
+    self.dash_timer:tween(Player.DASH_TIME, self, {x = fx, y = fy}, "out-quad", function()
       self.dashing = false
     end)
   end

@@ -48,7 +48,7 @@ function Sword:swing(x, y, rot)
   self.swinging = true
   self.tilt = get_random_tilt(self.tilt)
 
-  self.slash = Slash(x, y, rot, function() 
+  self.slash = Slash(x, y, rot, self.shake, function() 
     self.swinging = false
   end)
 end
