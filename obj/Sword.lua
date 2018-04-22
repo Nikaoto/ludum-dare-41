@@ -49,11 +49,17 @@ function Sword:update(dt)
   end
 end
 
-function Sword:swing(x, y, rot)
+function Sword:swing(x, y, rot, color)
   self.swinging = true
   self.swing_animator:tween(Sword.SWING_TIME, self, { tilt = getRandomTilt(self.tilt) }, "out-cubic")
 
-  self.slash = Slash(x, y, rot, self.shake, function() 
+  self.slash = Slash({ 
+    x = x, 
+    y = y, 
+    rotation = rot,
+    shake = self.shake,
+    color = color
+  }, function() 
     self.swinging = false
   end)
 end

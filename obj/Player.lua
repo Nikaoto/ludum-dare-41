@@ -23,7 +23,7 @@ function Player:new(x, y)
   self.y = y or 100
   self.scale_x = 1
   self.scale_y = 1
-  self.width = 60
+  self.width = 58
   self.height = 60
   self.ox = self.width/2
   self.oy = self.height/2

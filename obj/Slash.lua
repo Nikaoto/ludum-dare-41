@@ -7,6 +7,7 @@ Slash = Object:extend()
 Slash.SLASH_TIME = 0.21
 Slash.DISTANCE = 130
 Slash.SHAKE = 2
+Slash.COLOR = {1, 1, 1, 1}
 Slash.spritesheet = love.graphics.newImage("res/slash.png")
 Slash.sheet_width = 960
 Slash.sheet_height = 384
@@ -16,12 +17,13 @@ Slash.grid = anim8.newGrid(Slash.sprite_size, Slash.sprite_size, Slash.sheet_wid
 Slash.animation = anim8.newAnimation(Slash.grid("1-5",1, "1-2",2), Slash.SLASH_TIME/7)
 Slash.scale = 0.8
 
-function Slash:new(x, y, rotation, shake, callback)
-  self.x = x
-  self.y = y
-  self.rotation = rotation
+function Slash:new(args, callback)
+  self.x = args.x
+  self.y = args.y
+  self.rotation = args.rotation or 0
   self.animation = Slash.animation:clone()
   self.active = true
+  self.color = args.color or Slash.COLOR
 
   -- Shake stronger on collision
   camera:shake(shake or Slash.SHAKE, Slash.SLASH_TIME, 100)
@@ -42,6 +44,7 @@ end
 
 function Slash:draw()
   if self.active then
+    love.graphics.setColor(self.color)
     self.animation:draw(Slash.spritesheet, self.x, self.y, self.rotation, Slash.scale, Slash.scale, 
       Slash.origin, Slash.origin)
   end
