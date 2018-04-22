@@ -51,7 +51,7 @@ function Enemy:updateAI(dt)
 end
 
 function Enemy:update(dt)
-  if not self.dead then
+  if not self.dead and current_turn == self.name then
     self:updateAI(dt)
     self.sword:update(dt)
   end

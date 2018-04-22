@@ -30,6 +30,7 @@ function Player:new(x, y)
   self.oy = self.height/2
   self.name = "Player"
   self.health = Player.HEALTH
+  self.dead = false
 
   self.sprite_scale_x = self.width / Player.sprite_width
   self.sprite_scale_y = self.height / Player.sprite_height
@@ -50,18 +51,20 @@ function Player:new(x, y)
 end
 
 function Player:update(dt)
-  -- Set current animation
-  if self.moving or self.dashing or self.nudging then
-    self.current_animation = self.run_animation
-  else
-    self.current_animation = self.idle_animation
+  if not self.dead and current_turn == self.name then
+    -- Set current animation
+    if self.moving or self.dashing or self.nudging then
+      self.current_animation = self.run_animation
+    else
+      self.current_animation = self.idle_animation
+    end
+
+    self.current_animation:update(dt)
+    self.sword:update(dt)
+
+    self.swing_nudge:update(dt)
+    self.dash_timer:update(dt)
   end
-
-  self.current_animation:update(dt)
-  self.sword:update(dt)
-
-  self.swing_nudge:update(dt)
-  self.dash_timer:update(dt)
 end
 
 function Player:draw()
@@ -140,14 +143,13 @@ function Player:takeDamage(amount)
 end
 
 function Player:setDirection(dir)
-    self.direction = dir
-  
-  --[[if dir ~= self.direction then
+  self.direction = dir
+end
 
-    if self.current_animation then
-      self.current_animation:flipH()
-    end
-  end--]]
+function Player:destory()
+  self.dead = true
+  self.swing_nudge:destory()
+  self.dash_timer:destory()
 end
 
 function Player:move(dx, dy)

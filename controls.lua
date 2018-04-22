@@ -25,28 +25,30 @@ controls.mouse_x = 0
 controls.mouse_y = 0
 
 function controls.movement(dt)
-  dx, dy = 0, 0
-   
-  if isDown("w") then
-    dy = dy - speed * dt
-  end
+  if current_turn == player_turn then
+    dx, dy = 0, 0
+     
+    if isDown("w") then
+      dy = dy - speed * dt
+    end
 
-  if isDown("s") then
-    dy = dy + speed * dt
-  end
+    if isDown("s") then
+      dy = dy + speed * dt
+    end
 
-  if isDown("a") then
-    dx = dx - speed * dt
-  end
+    if isDown("a") then
+      dx = dx - speed * dt
+    end
 
-  if isDown("d") then
-    dx = dx + speed * dt
-  end
+    if isDown("d") then
+      dx = dx + speed * dt
+    end
 
-  if dx ~= 0 and dy ~= 0 then
-    dx, dy = dx * DIAGONAL_MOVEMENT_MOD, dy * DIAGONAL_MOVEMENT_MOD
+    if dx ~= 0 and dy ~= 0 then
+      dx, dy = dx * DIAGONAL_MOVEMENT_MOD, dy * DIAGONAL_MOVEMENT_MOD
+    end
+    player:move(dx, dy)
   end
-  player:move(dx, dy)
 end
 
 function controls.aim(dt)
@@ -71,17 +73,21 @@ end
 
 --[[ Callbacks ]]
 function controls.mousepressed(x, y, button)
-  if button == 1 then
-    player:attack(controls.mouse_x, controls.mouse_y)
-  end
+  if current_turn == player_turn then
+    if button == 1 then
+      player:attack(controls.mouse_x, controls.mouse_y)
+    end
 
-  if button == 2 then
-    player:dash(controls.mouse_x, controls.mouse_y)
+    if button == 2 then
+      player:dash(controls.mouse_x, controls.mouse_y)
+    end
   end
 end
 
 function controls.mousereleased(x, y, button)
-  --print("controls.mousereleased("..x..", "..y..", "..button..")")
+  if current_turn == player_turn then
+    --print("controls.mousereleased("..x..", "..y..", "..button..")")
+  end
 end
 
 --[[ Draw Mouse]]
