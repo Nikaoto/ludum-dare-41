@@ -11,15 +11,17 @@ function Enemy:getY() return self.y - self.oy end
 function Enemy:new(x, y)
   self.x = x
   self.y = y
+  self.name = "Enemy"
   self.width = 60
   self.height = 60
+
   self.ox = self.width/2
   self.oy = self.height/2
   self.move_direction = lume.random(math.pi)
   self.idle_move_speed = 200
   self.is_standing = true
 
-  self.sword = Sword()
+  self.sword = Sword(self.name)
 
   self.swing_timer = Timer()
   self.swing_timer:every({1, 10}, function()

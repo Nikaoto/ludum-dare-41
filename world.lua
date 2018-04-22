@@ -1,18 +1,21 @@
 world = {}
-world.enemies = {}
+world.objects = {}
 
 function world.load()
   math.randomseed(os.time())
 
-  --bump = Bump.newWorld(64)
-  for i=0, 5 do
-    table.insert(world.enemies, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
+  player = Player()
+  table.insert(world.objects, player)
+  for i=0, 15 do
+    table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
   end
 end
 
 function world.update(dt)
-  for i, enemy in pairs(world.enemies) do
-    enemy:update(dt)
+  for i, obj in pairs(world.objects) do
+    if obj.update then
+      obj:update(dt)
+    end
   end
 end
 
@@ -26,8 +29,32 @@ function world.draw()
     end
   end
 
-  -- Enemies
-  for i, enemy in pairs(world.enemies) do
-    enemy:draw(dt)
+  -- Objects
+  for i, obj in pairs(world.objects) do
+    if obj.draw then
+      obj:draw()
+    end
   end
+end
+
+function world.checkFirstCollision(x, y, w, h)
+  for i, obj in pairs(world.objects) do
+    if obj.x and obj.y and obj.width and obj.height then
+      if checkCollision(x, y, w, h, obj.x, obj.y, obj.width, obj.height) then
+        return obj
+      end
+    end
+  end
+end
+
+function world.checkCollisions(x, y, w, h)
+  local collided_objects = {}
+  for i, obj in pairs(world.objects) do
+    if obj.x and obj.y and obj.width and obj.height then
+      if checkCollision(x, y, w, h, obj.x, obj.y, obj.width, obj.height) then
+        table.insert(collided_objects, obj)
+      end
+    end
+  end
+  return collided_objects
 end

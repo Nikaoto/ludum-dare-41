@@ -23,10 +23,28 @@ function Slash:new(args, callback)
   self.rotation = args.rotation or 0
   self.animation = Slash.animation:clone()
   self.active = true
-  self.color = args.color or Slash.COLOR
+  self.scale = args.scale or Slash.scale
+  self.color = Slash.COLOR
+  self.width = args.width or Slash.sprite_size * self.scale
+  self.height = args.height or Slash.sprite_size * self.scale
+  self.ox = self.width / 2
+  self.oy = self.height / 2
 
-  -- Shake stronger on collision
-  camera:shake(shake or Slash.SHAKE, Slash.SLASH_TIME, 100)
+  self.caller = args.caller or ""
+
+  local hit_objects = world.checkCollisions(self.x - self.ox, self.y - self.oy, self.width, self.height)
+
+  hit_objects = lume.filter(hit_objects, function(x) return x.name ~= self.caller end)
+
+  if hit_objects and hit_objects[1] then
+    print(hit_objects[1].name)
+  end
+
+  if hit_objects and #hit_objects ~= 0 then
+    self.color = {1, 0, 0}
+    self.scale = self.scale + 0.1 * #hit_objects
+    camera:shake(args.shake or Slash.SHAKE, Slash.SLASH_TIME, 100 * #hit_objects)
+  end
 
   self.timer = Timer()
   self.timer:after(Slash.SLASH_TIME, function()
@@ -43,6 +61,8 @@ function Slash:update(dt)
 end
 
 function Slash:draw()
+  love.graphics.setColor(0, 1, 0)  
+  love.graphics.rectangle("line", self.x-self.ox, self.y-self.oy, self.width, self.height)
   if self.active then
     love.graphics.setColor(self.color)
     self.animation:draw(Slash.spritesheet, self.x, self.y, self.rotation, Slash.scale, Slash.scale, 

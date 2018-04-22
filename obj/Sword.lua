@@ -19,7 +19,7 @@ local getRandomTilt = function(prev_tilt)
 end
 
 --[[ Constructor ]]
-function Sword:new(shake, sprite)
+function Sword:new(owner, shake, sprite)
   self.sprite = sprite or fallback_sprite
   self.ox = self.sprite:getWidth() * 0.1
   self.oy = self.sprite:getHeight() / 2
@@ -28,7 +28,8 @@ function Sword:new(shake, sprite)
   self.rot = 0
   self.shake = shake or Sword.SHAKE
   self.slash = nil
-
+  self.owner = owner or ""
+  
   self.swing_animator = Timer()
   self.swing_animating = false
 end
@@ -49,7 +50,7 @@ function Sword:update(dt)
   end
 end
 
-function Sword:swing(x, y, rot, color)
+function Sword:swing(x, y, rot)
   self.swinging = true
   self.swing_animator:tween(Sword.SWING_TIME, self, { tilt = getRandomTilt(self.tilt) }, "out-cubic")
 
@@ -58,7 +59,7 @@ function Sword:swing(x, y, rot, color)
     y = y, 
     rotation = rot,
     shake = self.shake,
-    color = color
+    caller = self.owner
   }, function() 
     self.swinging = false
   end)

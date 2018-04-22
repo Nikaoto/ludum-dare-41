@@ -3,7 +3,6 @@ lume = require "lib/lume"
 anim8 = require "lib/anim8"
 Timer = require "lib/Timer"
 Camera = require "lib/Camera"
-Bump = require "lib/bump"
 
 require "conf"
 require "controls"
@@ -21,8 +20,6 @@ function love.load()
   camera:setFollowStyle("LOCKON")
 
   world.load()
-
-  player = Player()
   tile = {
     width = 100,
     height = 100,
@@ -39,13 +36,11 @@ function love.update(dt)
   camera:follow(player.x, player.y)
   controls.update(dt)
   world.update(dt)
-  player:update(dt)
 end
 
 function love.draw()
   camera:attach()
   world.draw()
-  player:draw()
   camera:detach()
   camera:draw()
   controls.drawMouse()
@@ -65,5 +60,8 @@ end
 
 function love.mousereleased(x, y, button)
   controls.mousereleased(x, y, button)
+end
 
+function checkCollision(x1,y1,w1,h1, x2,y2,w2,h2)
+  return x1 < x2+w2 and x2 < x1+w1 and y1 < y2+h2 and y2 < y1+h1
 end

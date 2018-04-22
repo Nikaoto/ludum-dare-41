@@ -27,11 +27,12 @@ function Player:new(x, y)
   self.height = 60
   self.ox = self.width/2
   self.oy = self.height/2
+  self.name = "Player"
 
   self.sprite_scale_x = self.width / Player.sprite_width
   self.sprite_scale_y = self.height / Player.sprite_height
 
-  self.sword = Sword(7)
+  self.sword = Sword(self.name, 7)
 
   self.dashing = false
   self.nudging = false
