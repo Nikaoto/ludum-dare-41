@@ -68,10 +68,11 @@ function Player:draw()
     love.graphics.setColor(1, 1, 1)
   end
 
-  self.current_animation:draw(Player.spritesheet, self:getX(), self:getY(), 0, 
+  self.current_animation:draw(Player.spritesheet, self.x, self.y, 0, 
       self.scale_x * self.sprite_scale_x * self.direction, 
-      self.scale_y * self.sprite_scale_y)
-
+      self.scale_y * self.sprite_scale_y,
+      Player.sprite_width/2,
+      Player.sprite_height/2)
   self.sword:draw(self.x, self.y)
 end
 
@@ -125,9 +126,14 @@ end
 
 --
 function Player:setDirection(dir)
-  print(dir)
-  self.direction = dir
-  print(self.direction)
+    self.direction = dir
+  
+  --[[if dir ~= self.direction then
+
+    if self.current_animation then
+      self.current_animation:flipH()
+    end
+  end--]]
 end
 
 function Player:move(dx, dy)

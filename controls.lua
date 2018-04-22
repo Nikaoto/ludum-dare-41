@@ -59,7 +59,7 @@ function controls.aim(dt)
   if a > math.pi/2 and a < math.pi*3/2 then
     player:setDirection(1)
   else
-    Player:setDirection(-1)
+    player:setDirection(-1)
   end
 end
 
