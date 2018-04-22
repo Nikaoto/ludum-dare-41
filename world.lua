@@ -12,10 +12,20 @@ function world.load()
 end
 
 function world.update(dt)
+  local corpse_indexes = {}
+
   for i, obj in pairs(world.objects) do
     if obj.update then
       obj:update(dt)
+      if obj.dead then
+        table.insert(corpse_indexes, i)
+      end
     end
+  end
+
+  -- Clear corpses
+  for _, i in pairs(corpse_indexes) do
+    world.objects[i] = {}
   end
 end
 
@@ -30,7 +40,7 @@ function world.draw()
   end
 
   -- Objects
-  for i, obj in pairs(world.objects) do
+  for i, obj in lume.ripairs(world.objects) do
     if obj.draw then
       obj:draw()
     end

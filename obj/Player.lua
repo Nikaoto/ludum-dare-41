@@ -3,6 +3,7 @@ Player = Object:extend()
 Player.DASH_DISTANCE = 220
 Player.DASH_TIME = 0.25
 Player.NUDGE_TIME = 0.21
+Player.HEALTH = 100
 
 Player.spritesheet = love.graphics.newImage("res/player.png")
 Player.sheet_width = 52
@@ -28,6 +29,7 @@ function Player:new(x, y)
   self.ox = self.width/2
   self.oy = self.height/2
   self.name = "Player"
+  self.health = Player.HEALTH
 
   self.sprite_scale_x = self.width / Player.sprite_width
   self.sprite_scale_y = self.height / Player.sprite_height
@@ -126,6 +128,17 @@ function Player:dash(mouse_x, mouse_y)
 end
 
 --
+function Player:takeDamage(amount)
+  if not self.dashing then
+    self.health = self.health - amount
+
+    if self.health <= 0 then
+      print(self.name, "DEAD")
+      self:destory()
+    end
+  end
+end
+
 function Player:setDirection(dir)
     self.direction = dir
   

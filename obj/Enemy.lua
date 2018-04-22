@@ -2,6 +2,7 @@ Enemy = Object:extend()
 
 --[[ Global Constants ]]
 Enemy.STAND_CHANCE = 0.5
+Enemy.HEALTH = 70
 
 --[[ Utils ]]
 function Enemy:getX() return self.x - self.ox end
@@ -14,6 +15,7 @@ function Enemy:new(x, y)
   self.name = "Enemy"
   self.width = 60
   self.height = 60
+  self.health = Enemy.HEALTH
 
   self.ox = self.width/2
   self.oy = self.height/2
@@ -49,23 +51,35 @@ function Enemy:updateAI(dt)
 end
 
 function Enemy:update(dt)
-  self:updateAI(dt)
-  self.sword:update(dt)
+  if not self.dead then
+    self:updateAI(dt)
+    self.sword:update(dt)
+  end
 end
 
 function Enemy:draw()
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.rectangle("fill", self:getX(), self:getY(), self.width, self.height)
-  self.sword:draw(self.x, self.y)
+  if not self.dead then
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+    self.sword:draw(self.x + self.ox, self.y + self.oy)
+  end
 end
 
 function Enemy:destroy()
+  self.dead = true
   self.swing_timer:destroy()
   self.movement_timer:destroy()
-  self = {}
 end
 
 --
+function Enemy:takeDamage(amount)
+  self.health = self.health - amount
+  if self.health <= 0 then
+    print(self.name, "DEAD")
+    self:destroy()
+  end
+end
+
 function Enemy:move(dx, dy)
   self.x = self.x + dx
   self.y = self.y + dy 

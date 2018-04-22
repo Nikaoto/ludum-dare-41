@@ -8,6 +8,7 @@ Slash.SLASH_TIME = 0.21
 Slash.DISTANCE = 130
 Slash.SHAKE = 2
 Slash.COLOR = {1, 1, 1, 1}
+Slash.DAMAGE = 30
 Slash.spritesheet = love.graphics.newImage("res/slash.png")
 Slash.sheet_width = 960
 Slash.sheet_height = 384
@@ -25,26 +26,35 @@ function Slash:new(args, callback)
   self.active = true
   self.scale = args.scale or Slash.scale
   self.color = Slash.COLOR
-  self.width = args.width or Slash.sprite_size * self.scale
-  self.height = args.height or Slash.sprite_size * self.scale
+  self.width = args.width or Slash.sprite_size * self.scale * 0.6 -- smaller for collisions
+  self.height = args.height or Slash.sprite_size * self.scale * 0.6
   self.ox = self.width / 2
   self.oy = self.height / 2
+  self.damage = args.damage or Slash.DAMAGE
 
   self.caller = args.caller or ""
+  self.shake = args.shake or Slash.SHAKE
+  self.slash_time = Slash.SLASH_TIME
 
+  -- Detect hit objects
   local hit_objects = world.checkCollisions(self.x - self.ox, self.y - self.oy, self.width, self.height)
-
+  -- Remove swinger from collisions
   hit_objects = lume.filter(hit_objects, function(x) return x.name ~= self.caller end)
 
-  if hit_objects and hit_objects[1] then
-    print(hit_objects[1].name)
+  -- Deal damages
+  for i, obj in pairs(hit_objects) do
+    if obj.takeDamage then
+      obj:takeDamage(self.damage)
+    end
   end
 
+  -- Set visual effects depending on hit objects
   if hit_objects and #hit_objects ~= 0 then
     self.color = {1, 0, 0}
-    self.scale = self.scale + 0.1 * #hit_objects
-    camera:shake(args.shake or Slash.SHAKE, Slash.SLASH_TIME, 100 * #hit_objects)
+    self.scale = self.scale + #hit_objects
+    self.slash_time = self.slash_time + 0.2 * #hit_objects
   end
+  camera:shake(self.shake, self.slash_time, 100)
 
   self.timer = Timer()
   self.timer:after(Slash.SLASH_TIME, function()
