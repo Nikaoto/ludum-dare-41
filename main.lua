@@ -12,6 +12,7 @@ require "obj/Sword"
 require "obj/Player"
 require "obj/Enemy"
 
+DISABLE_TURNS = false
 TURN_DURATION = 3
 player_turn = "Player"
 enemy_turn = "Enemy"

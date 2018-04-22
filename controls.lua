@@ -25,7 +25,7 @@ controls.mouse_x = 0
 controls.mouse_y = 0
 
 function controls.movement(dt)
-  if current_turn == player_turn then
+  if current_turn == player_turn or DISABLE_TURNS then
     dx, dy = 0, 0
      
     if isDown("w") then
@@ -73,7 +73,7 @@ end
 
 --[[ Callbacks ]]
 function controls.mousepressed(x, y, button)
-  if current_turn == player_turn then
+  if current_turn == player_turn or DISABLE_TURNS then
     if button == 1 then
       player:attack(controls.mouse_x, controls.mouse_y)
     end
@@ -85,7 +85,7 @@ function controls.mousepressed(x, y, button)
 end
 
 function controls.mousereleased(x, y, button)
-  if current_turn == player_turn then
+  if current_turn == player_turn or DISABLE_TURNS then
     --print("controls.mousereleased("..x..", "..y..", "..button..")")
   end
 end

@@ -51,7 +51,7 @@ function Player:new(x, y)
 end
 
 function Player:update(dt)
-  if not self.dead and current_turn == self.name then
+  if DISABLE_TURNS or not self.dead and current_turn == self.name then
     -- Set current animation
     if self.moving or self.dashing or self.nudging then
       self.current_animation = self.run_animation
@@ -137,7 +137,7 @@ function Player:takeDamage(amount)
 
     if self.health <= 0 then
       print(self.name, "DEAD")
-      self:destory()
+      self:destroy()
     end
   end
 end
@@ -146,10 +146,10 @@ function Player:setDirection(dir)
   self.direction = dir
 end
 
-function Player:destory()
+function Player:destroy()
   self.dead = true
-  self.swing_nudge:destory()
-  self.dash_timer:destory()
+  self.swing_nudge:destroy()
+  self.dash_timer:destroy()
 end
 
 function Player:move(dx, dy)

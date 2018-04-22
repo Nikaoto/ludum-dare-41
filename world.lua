@@ -6,7 +6,7 @@ function world.load()
 
   player = Player()
   table.insert(world.objects, player)
-  for i=0, 15 do
+  for i=0, 20 do
     table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
   end
 end
