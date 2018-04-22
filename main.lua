@@ -45,9 +45,9 @@ function love.draw()
   camera:attach()
   world.draw()
   player:draw()
-  controls.drawMouse()
   camera:detach()
   camera:draw()
+  controls.drawMouse()
 
   love.graphics.setColor(1, 1, 1)
 end

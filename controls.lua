@@ -81,7 +81,7 @@ function controls.drawMouse()
   local mx, my = love.mouse.getPosition()
   controls.mouse_x, controls.mouse_y = getMousePosition(player.x, player.y, mx, my)
 
-  local mouse_x, mouse_y = controls.mouse_x, controls.mouse_y
+  local mouse_x, mouse_y = love.mouse.getPosition()
   love.graphics.setColor(1, 1, 1)
   love.graphics.circle("line", mouse_x, mouse_y, CROSSHAIR_RADIUS, CROSSHAIR_SEGMENTS)
 
