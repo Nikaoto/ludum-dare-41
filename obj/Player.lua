@@ -12,6 +12,8 @@ function Player:getY() return self.y - self.oy end
 function Player:new(x, y)
   self.x = x or 100
   self.y = y or 100
+  self.scale_x = 1
+  self.scale_y = 1
   self.width = 60
   self.height = 60
   self.ox = self.width/2
@@ -41,13 +43,12 @@ end
 
 function Player:draw()
   if self.dashing then
-    love.graphics.setColor(1, 1, 1, 0.3)
-    --TODO squish player on dash
-    love.graphics.rectangle("fill", self:getX(), self:getY(), self.width, self.height)
+    love.graphics.setColor(1, 1, 1, 0.4)
+    love.graphics.rectangle("fill", self:getX(), self:getY(), self.width*self.scale_x, self.height * self.scale_y)
     self.sword:draw(self.x, self.y)    
   else
     love.graphics.setColor(1, 1, 1)
-    love.graphics.rectangle("fill", self:getX(), self:getY(), self.width, self.height)
+    love.graphics.rectangle("fill", self:getX(), self:getY(), self.width*self.scale_x, self.height * self.scale_y)
     self.sword:draw(self.x, self.y)
   end
 end
@@ -64,10 +65,13 @@ function Player:attack(mouse_x, mouse_y)
   self.sword:swing(self.x + sx, self.y + sy, rot)
   -- Nudge player
   if not self.moving then
-    print(self.moving, "nudge!")
     self.nudging = true
-    self.swing_nudge:tween(Player.NUDGE_TIME, self, {x = self.x + sx*0.3, y = self.y + sy*0.3}, 
-      "out-cubic", function() self.nudging = false end)
+    self.swing_nudge:tween(Player.NUDGE_TIME, self, {
+      x = self.x + sx*0.3, 
+      y = self.y + sy*0.3
+    }, "out-cubic", function() 
+      self.nudging = false
+    end)
   end
 end
 
@@ -81,8 +85,17 @@ function Player:dash(mouse_x, mouse_y)
     self.dash_x, self.dash_y = lume.vector(aim_angle, Player.DASH_DISTANCE)
     -- Dash final destination
     local fx, fy = self.dash_x + self.x, self.dash_y + self.y
+
+    -- Squish player
+    self.scale_y = self.x / (self.x + fx * Player.DASH_TIME)
+    self.scale_x = self.y / (self.y + fy * Player.DASH_TIME)
     -- Start dash countdown
-    self.dash_timer:tween(Player.DASH_TIME, self, {x = fx, y = fy}, "out-quad", function()
+    self.dash_timer:tween(Player.DASH_TIME, self, {
+      x = fx, 
+      y = fy,
+      scale_x = 1,
+      scale_y = 1
+    }, "out-quad", function()
       self.dashing = false
     end)
   end
