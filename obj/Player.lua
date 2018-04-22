@@ -64,7 +64,7 @@ function Player:dash(mouse_x, mouse_y)
     -- Dash vector
     self.dash_x, self.dash_y = lume.vector(aim_angle, Player.DASH_DISTANCE)
     -- Dash final destination
-    local fx, fy = self.dash_x + self.x, self.dash_y + self.y
+    local fx, fy = self.dash_x + self:getX(), self.dash_y + self:getY()
     -- Start dash countdown
     self.dash_timer:tween(Player.DASH_TIME, self, {x = fx, y = fy}, "out-cubic", function()
       self.dashing = false
