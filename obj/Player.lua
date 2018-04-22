@@ -4,6 +4,15 @@ Player.DASH_DISTANCE = 220
 Player.DASH_TIME = 0.25
 Player.NUDGE_TIME = 0.21
 
+Player.spritesheet = love.graphics.newImage("res/player.png")
+Player.sheet_width = 52
+Player.sheet_height = 30
+Player.sprite_width = 13
+Player.sprite_height = 15
+Player.grid = anim8.newGrid(Player.sprite_width, Player.sprite_height, Player.sheet_width, Player.sheet_height)
+Player.idle_animation = anim8.newAnimation(Player.grid("1-4",1), 0.1)
+Player.run_animation = anim8.newAnimation(Player.grid("1-4",2), 0.1)
+
 --[[ Utils ]]
 function Player:getX() return self.x - self.ox end
 function Player:getY() return self.y - self.oy end
@@ -19,6 +28,9 @@ function Player:new(x, y)
   self.ox = self.width/2
   self.oy = self.height/2
 
+  self.sprite_scale_x = self.width / Player.sprite_width
+  self.sprite_scale_y = self.height / Player.sprite_height
+
   self.sword = Sword(7)
 
   self.dashing = false
@@ -28,9 +40,12 @@ function Player:new(x, y)
   self.dash_timer = Timer()
   self.dash_x = 0
   self.dash_y = 0
+
+  self.current_animation = self.idle_animation
 end
 
 function Player:update(dt)
+  self.idle_animation:update(dt)
   self.sword:update(dt)
 
   if self.nudging then
@@ -44,13 +59,14 @@ end
 function Player:draw()
   if self.dashing then
     love.graphics.setColor(1, 1, 1, 0.4)
-    love.graphics.rectangle("fill", self:getX(), self:getY(), self.width*self.scale_x, self.height * self.scale_y)
-    self.sword:draw(self.x, self.y)    
   else
     love.graphics.setColor(1, 1, 1)
-    love.graphics.rectangle("fill", self:getX(), self:getY(), self.width*self.scale_x, self.height * self.scale_y)
-    self.sword:draw(self.x, self.y)
   end
+
+  self.current_animation:draw(Player.spritesheet, self:getX(), self:getY(), 0, 
+      self.scale_x * self.sprite_scale_x, self.scale_y * self.sprite_scale_y)
+  
+  self.sword:draw(self.x, self.y)
 end
 
 --[[ Attack ]]

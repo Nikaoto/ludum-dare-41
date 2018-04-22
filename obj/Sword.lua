@@ -3,11 +3,12 @@ package.path = package.path .. ";../?.lua"
 Sword = Object:extend()
 
 Sword.SHAKE = 4
+Sword.SWING_TIME = 0.18 -- == Slash.SLASH_TIME
 
 local fallback_sprite = love.graphics.newImage("res/sword.png")
 
 --[[ Utils ]]
-local get_random_tilt = function(prev_tilt)
+local getRandomTilt = function(prev_tilt)
   local upper = math.pi * 0.8
   local lower = math.pi * 0.5
   if prev_tilt > 0 then
@@ -27,11 +28,14 @@ function Sword:new(shake, sprite)
   self.rot = 0
   self.shake = shake or Sword.SHAKE
   self.slash = nil
+
+  self.swing_animator = Timer()
+  self.swing_animating = false
 end
 
 function Sword:draw(player_x, player_y)
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(self.sprite, player_x, player_y, self.rot, 1, 1, self.ox, self.oy)
+  love.graphics.draw(self.sprite, player_x, player_y, self.rotation, 1, 1, self.ox, self.oy)
 
   if self.swinging and self.slash then
     self.slash:draw()
@@ -39,6 +43,7 @@ function Sword:draw(player_x, player_y)
 end
 
 function Sword:update(dt)
+  self.swing_animator:update(dt)
   if self.slash then
     self.slash:update(dt)
   end
@@ -46,7 +51,7 @@ end
 
 function Sword:swing(x, y, rot)
   self.swinging = true
-  self.tilt = get_random_tilt(self.tilt)
+  self.swing_animator:tween(Sword.SWING_TIME, self, { tilt = getRandomTilt(self.tilt) }, "out-cubic")
 
   self.slash = Slash(x, y, rot, self.shake, function() 
     self.swinging = false
@@ -54,10 +59,10 @@ function Sword:swing(x, y, rot)
 end
 
 --
-function Sword:set_rotation(rot)
-  self.rot = rot + self.tilt
+function Sword:setRotation(rot)
+  self.rotation = rot + self.tilt
 end
 
-function Sword:get_rotation()
-  return self.rot
+function Sword:getRotation()
+  return self.rototation
 end

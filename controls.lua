@@ -50,7 +50,7 @@ function controls.movement(dt)
 end
 
 function controls.aim(dt)
-  player.sword:set_rotation(lume.angle(player:getX(), player:getY(), controls.mouse_x, 
+  player.sword:setRotation(lume.angle(player:getX(), player:getY(), controls.mouse_x, 
     controls.mouse_y))
 end
 
