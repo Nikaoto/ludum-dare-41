@@ -25,6 +25,7 @@ function Enemy:new(x, y)
   self.swing_timer:every({1, 10}, function()
     local aim_angle = lume.angle(player:getX(), player:getY(), self.x, self.y)
     local sx, sy = lume.vector(aim_angle, Slash.DISTANCE)
+    love.graphics.setColor(1, 0, 0)
     self.sword:swing(self:getX() + sx, self:getY() + sy, lume.random(3.14))  
   end)
 
