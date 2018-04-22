@@ -2,6 +2,9 @@ world = {}
 world.enemies = {}
 
 function world.load()
+  math.randomseed(os.time())
+
+  --bump = Bump.newWorld(64)
   for i=0, 5 do
     table.insert(world.enemies, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
   end

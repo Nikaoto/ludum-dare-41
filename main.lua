@@ -3,6 +3,7 @@ lume = require "lib/lume"
 anim8 = require "lib/anim8"
 Timer = require "lib/Timer"
 Camera = require "lib/Camera"
+Bump = require "lib/bump"
 
 require "conf"
 require "controls"
