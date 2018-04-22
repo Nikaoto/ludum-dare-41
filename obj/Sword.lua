@@ -2,7 +2,8 @@ package.path = package.path .. ";../?.lua"
 
 Sword = Object:extend()
 
-local ROTATION_MOD = math.pi*1.2
+Sword.SHAKE = 4
+
 local fallback_sprite = love.graphics.newImage("res/sword.png")
 
 --[[ Utils ]]
@@ -17,14 +18,14 @@ local get_random_tilt = function(prev_tilt)
 end
 
 --[[ Constructor ]]
-function Sword:new(sprite)
+function Sword:new(shake, sprite)
   self.sprite = sprite or fallback_sprite
   self.ox = self.sprite:getWidth() * 0.1
   self.oy = self.sprite:getHeight() / 2
   self.tilt = 1
   self.swinging = false
   self.rot = 0
-
+  self.shake = shake or Sword.SHAKE
   self.slash = nil
 end
 

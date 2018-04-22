@@ -10,11 +10,14 @@ require "world"
 require "obj/Slash"
 require "obj/Sword"
 require "obj/Player"
+require "obj/Enemy"
 
 function love.load()
   conf.load()
 
   shack:setDimensions(conf.window.width, conf.window.height)
+
+  world.load()
 
   player = Player()
   tile = {
@@ -39,6 +42,7 @@ end
 function love.update(dt)
   shack:update(dt)
   controls.update(dt)
+  world.update(dt)
   player:update(dt)
 end
 
