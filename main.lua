@@ -12,6 +12,13 @@ require "obj/Sword"
 require "obj/Player"
 require "obj/Enemy"
 
+TURN_DURATION = 3
+player_turn = "Player"
+enemy_turn = "Enemy"
+
+current_turn = player_turn
+
+
 function love.load()
   conf.load()
 
@@ -29,9 +36,19 @@ function love.load()
   tile.actual_width = tile.sprite:getWidth()
   tile.scale_x = tile.width / tile.actual_width
   tile.scale_y = tile.height / tile.actual_height
+
+  turn_timer = Timer()
+  turn_timer_tag = turn_timer:every(TURN_DURATION, function()
+    if current_turn == player_turn then
+      current_turn = enemy_turn
+    else
+      current_turn = player_turn
+    end
+  end)
 end
 
 function love.update(dt)
+  turn_timer:update(dt)
   camera:update(dt)
   camera:follow(player.x, player.y)
   controls.update(dt)
@@ -45,6 +62,12 @@ function love.draw()
   camera:draw()
   controls.drawMouse()
 
+  -- Draw turn timer
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.print("TURN: "..current_turn)
+  local current_time, max_time = turn_timer:getTime(turn_timer_tag)
+  local time_left = max_time - current_time
+  love.graphics.print("\n"..time_left- (time_left % 0.01))
   love.graphics.setColor(1, 1, 1)
 end
 
