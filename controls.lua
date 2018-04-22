@@ -50,8 +50,17 @@ function controls.movement(dt)
 end
 
 function controls.aim(dt)
-  player.sword:setRotation(lume.angle(player:getX(), player:getY(), controls.mouse_x, 
-    controls.mouse_y))
+  -- Rotate player sword
+  local angle = lume.angle(player:getX(), player:getY(), controls.mouse_x, controls.mouse_y)
+  player.sword:setRotation(angle)
+
+  -- Set player direction
+  local a = angle + math.pi
+  if a > math.pi/2 and a < math.pi*3/2 then
+    player:setDirection(1)
+  else
+    Player:setDirection(-1)
+  end
 end
 
 --[[ Update ]]

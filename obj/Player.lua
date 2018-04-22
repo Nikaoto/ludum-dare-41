@@ -10,7 +10,7 @@ Player.sheet_height = 30
 Player.sprite_width = 13
 Player.sprite_height = 15
 Player.grid = anim8.newGrid(Player.sprite_width, Player.sprite_height, Player.sheet_width, Player.sheet_height)
-Player.idle_animation = anim8.newAnimation(Player.grid("1-4",1), 0.1)
+Player.idle_animation = anim8.newAnimation(Player.grid(1,1), 0.2)
 Player.run_animation = anim8.newAnimation(Player.grid("1-4",2), 0.1)
 
 --[[ Utils ]]
@@ -42,18 +42,23 @@ function Player:new(x, y)
   self.dash_y = 0
 
   self.current_animation = self.idle_animation
+
+  self.direction = 1
 end
 
 function Player:update(dt)
-  self.idle_animation:update(dt)
+  -- Set current animation
+  if self.moving or self.dashing or self.nudging then
+    self.current_animation = self.run_animation
+  else
+    self.current_animation = self.idle_animation
+  end
+
+  self.current_animation:update(dt)
   self.sword:update(dt)
 
-  if self.nudging then
-    self.swing_nudge:update(dt)
-  end
-  if self.dashing then
-    self.dash_timer:update(dt)
-  end
+  self.swing_nudge:update(dt)
+  self.dash_timer:update(dt)
 end
 
 function Player:draw()
@@ -64,8 +69,9 @@ function Player:draw()
   end
 
   self.current_animation:draw(Player.spritesheet, self:getX(), self:getY(), 0, 
-      self.scale_x * self.sprite_scale_x, self.scale_y * self.sprite_scale_y)
-  
+      self.scale_x * self.sprite_scale_x * self.direction, 
+      self.scale_y * self.sprite_scale_y)
+
   self.sword:draw(self.x, self.y)
 end
 
@@ -118,6 +124,12 @@ function Player:dash(mouse_x, mouse_y)
 end
 
 --
+function Player:setDirection(dir)
+  print(dir)
+  self.direction = dir
+  print(self.direction)
+end
+
 function Player:move(dx, dy)
   if dx ~= 0 or dy ~= 0 then
     if not self.dashing then
