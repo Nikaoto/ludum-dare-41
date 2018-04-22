@@ -23,7 +23,7 @@ function Slash:new(x, y, rotation, callback)
   self.active = true
 
   -- Shake stronger on collision
-  shack:setShake(7)
+  camera:shake(7, 0.5, 60)
 
   self.timer = Timer()
   self.timer:after(Slash.SLASH_TIME, function()

@@ -52,7 +52,7 @@ function Player:attack(mouse_x, mouse_y)
   -- Slash sprite rotation
   local rot = lume.random(3.14)
 
-  self.sword:swing(self:getX() + sx, self:getY() + sy, rot)
+  self.sword:swing(self.x + sx, self.y + sy, rot)
 end
 
 --[[ Dash ]]

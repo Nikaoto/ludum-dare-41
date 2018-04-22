@@ -2,7 +2,7 @@ Object = require "lib/classic"
 lume = require "lib/lume"
 anim8 = require "lib/anim8"
 Timer = require "lib/Timer"
-shack = require "lib/shack"
+Camera = require "lib/Camera"
 
 require "conf"
 require "controls"
@@ -15,7 +15,8 @@ require "obj/Enemy"
 function love.load()
   conf.load()
 
-  shack:setDimensions(conf.window.width, conf.window.height)
+  camera = Camera()
+  camera:setFollowLerp(0.2)
 
   world.load()
 
@@ -31,19 +32,24 @@ function love.load()
   tile.scale_y = tile.height / tile.actual_height
 end
 
-function love.draw()
-  shack:apply()
-  world.draw()
-  player:draw()
-  controls.draw_mouse()
-  love.graphics.setColor(1, 1, 1)
-end
-
 function love.update(dt)
-  shack:update(dt)
+  camera:update(dt)
+  local mx, my = love.mouse.getPosition()
+  camera:follow(player.x, player.y)
   controls.update(dt)
   world.update(dt)
   player:update(dt)
+end
+
+function love.draw()
+  camera:attach()
+  world.draw()
+  player:draw()
+  controls.drawMouse()
+  camera:detach()
+  camera:draw()
+
+  love.graphics.setColor(1, 1, 1)
 end
 
 function love.keypressed(k)

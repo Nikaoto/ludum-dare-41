@@ -12,6 +12,17 @@ speed = 450
 
 --[[ Utils ]]
 local isDown = function(key) return love.keyboard.isDown(key) end
+local transform_mouse_position = function(x, y) 
+  return (x - conf.window.width / 2), (y - conf.window.height / 2) 
+end
+
+local getMousePosition = function(px, py, mx, my)
+  return (px + mx - conf.window.width/2), (py + my - conf.window.height/2)
+end
+
+
+controls.mouse_x = 0
+controls.mouse_y = 0
 
 function controls.movement(dt)
   dx, dy = 0, 0
@@ -39,8 +50,8 @@ function controls.movement(dt)
 end
 
 function controls.aim(dt)
-  local mouse_x, mouse_y = love.mouse.getPosition()
-  player.sword:set_rotation(lume.angle(player:getX(), player:getY(), mouse_x, mouse_y))
+  player.sword:set_rotation(lume.angle(player:getX(), player:getY(), controls.mouse_x, 
+    controls.mouse_y))
 end
 
 --[[ Update ]]
@@ -52,11 +63,11 @@ end
 --[[ Callbacks ]]
 function controls.mousepressed(x, y, button)
   if button == 1 then
-    player:attack(x, y)
+    player:attack(controls.mouse_x, controls.mouse_y)
   end
 
   if button == 2 then
-    player:dash(x, y)
+    player:dash(controls.mouse_x, controls.mouse_y)
   end
 end
 
@@ -65,8 +76,12 @@ function controls.mousereleased(x, y, button)
 end
 
 --[[ Draw Mouse]]
-function controls.draw_mouse()
-  mouse_x, mouse_y = love.mouse.getPosition()
+function controls.drawMouse()
+  -- Update mouse position
+  local mx, my = love.mouse.getPosition()
+  controls.mouse_x, controls.mouse_y = getMousePosition(player.x, player.y, mx, my)
+
+  local mouse_x, mouse_y = controls.mouse_x, controls.mouse_y
   love.graphics.setColor(1, 1, 1)
   love.graphics.circle("line", mouse_x, mouse_y, CROSSHAIR_RADIUS, CROSSHAIR_SEGMENTS)
 
