@@ -50,8 +50,7 @@ function EnemyB:new(x, y)
 
   -- Timers
   self.build_timer = Timer()
-  self.build_timer:every({1, 3}, function()
-
+  self.build_timer:every({2, 4}, function()
     local aim_angle = lume.random(math.pi*2)
     local sx, sy = lume.vector(aim_angle, self.BUILD_DISTANCE)
     self:build(self:getX() + sx, self:getY() + sy)
@@ -66,13 +65,12 @@ function EnemyB:new(x, y)
   self.attack_timer = Timer()
 end
 
-function Enemy:updateAI(dt)
-  self.swing_timer:update(dt)
+function EnemyB:updateAI(dt)
   self.movement_timer:update(dt)
-  self.attack_timer:update(dt)
+  self.build_timer:update(dt)
 
-  if self:aggroed() then
-    self:moveTowardsPlayer(dt)
+  if self:shouldRunAway() then
+    self:runAway(dt)
   else
     if self.standing then
       self.current_animation = self.idle_animation
@@ -89,30 +87,23 @@ function Enemy:updateAI(dt)
   end
 end
 
-function Enemy:moveTowardsPlayer(dt)
+function EnemyB:runAway(dt)
   self.current_animation = self.run_animation
 
-  self.move_direction = lume.angle(self.x, self.y, player.x, player.y)
-  local dx, dy = lume.vector(self.move_direction, self.aggro_move_speed)
+  self.move_direction = lume.angle(self.x, self.y, player.x, player.y) + math.pi
+  local dx, dy = lume.vector(self.move_direction, self.flee_move_speed)
   self:move(dx * dt, dy * dt)
-
-  if self:canAttackPlayer() then
-    self.attack_timer:update(dt)
-    self:attackPlayer()
-  else
-    self.attacking = false
-  end
+  self.fleeing = true
 end
 
-function Enemy:update(dt)
+function EnemyB:update(dt)
   if DISABLE_TURNS or not self.dead and current_turn == self.name then
     self:updateAI(dt)
     self.current_animation:update(dt)
-    self.sword:update(dt)
   end
 end
 
-function Enemy:draw()
+function EnemyB:draw()
   if not self.dead then
     love.graphics.setColor(0.545, 0.271, 0.075)
     self.current_animation:draw(self.spritesheet, self:getX(), self:getY(), 0, 
@@ -121,37 +112,27 @@ function Enemy:draw()
         self.sprite_width/2,
         self.sprite_height/2)
 
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.circle("line", self:getX(), self:getY(), Enemy.AGGRO_DISTANCE)
-    self.sword:draw(self:getX(), self:getY())
+    love.graphics.setColor(1, 1, 0)
+    love.graphics.circle("line", self:getX(), self:getY(), EnemyB.FLEE_DISTANCE)
 
     drawCollider(self)
   end
 end
 
 -- Swings towards player
-function Enemy:attackPlayer()
-  if not self.attacking then
-    self.attacking = true
-    local aim_angle = lume.angle(player:getX(), player:getY(), self.x, self.y)
-    local sx, sy = lume.vector(aim_angle, Slash.DISTANCE)
-    self.sword:swing(self:getX() + sx, self:getY() + sy, lume.random(math.pi))
-
-    self.attack_timer:after({1, 2}, function() 
-      self.attacking = false
-    end)
-  end
+function EnemyB:build(x, y, width, height)
+  table.insert(world.blocks, Block(x, y, width, height))
 end
 
-function Enemy:canAttackPlayer()
+function Enemy:canBuild()
   return lume.distance(player.x, player.y, self.x, self.y) < Enemy.ATTACK_DISTANCE
 end
 
-function Enemy:aggroed()
-  return lume.distance(player.x, player.y, self.x, self.y) < Enemy.AGGRO_DISTANCE
+function EnemyB:shouldRunAway()
+  return lume.distance(player.x, player.y, self.x, self.y) < EnemyB.FLEE_DISTANCE
 end
 
-function Enemy:getDirection()
+function EnemyB:getDirection()
   if self.move_direction > math.pi/2 and self.move_direction < math.pi*3/2 then
     return -1
   end
@@ -159,20 +140,20 @@ function Enemy:getDirection()
 end
 
 --
-function Enemy:destroy()
+function EnemyB:destroy()
   self.dead = true
-  self.swing_timer:destroy()
+  self.build_timer:destroy()
   self.movement_timer:destroy()
 end
 
-function Enemy:takeDamage(amount)
+function EnemyB:takeDamage(amount)
   self.health = self.health - amount
   if self.health <= 0 then
     self:destroy()
   end
 end
 
-function Enemy:move(dx, dy)
+function EnemyB:move(dx, dy)
   self.x = self.x + dx
   self.y = self.y + dy 
 end

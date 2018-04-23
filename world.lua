@@ -4,8 +4,8 @@ world.blocks = {}
 world.bounds = {
   x1 = 0,
   y1 = 0,
-  x2 = 1100,
-  y2 = 1125
+  x2 = 1000,
+  y2 = 1000
 }
 
 STARTING_ENEMY_SPAWN = 3
@@ -16,6 +16,7 @@ current_enemy_spawn = STARTING_ENEMY_SPAWN
 
 function world.reset()
   current_enemy_spawn = STARTING_ENEMY_SPAWN
+  current_level = 1
   world.load()
 end
 
@@ -27,6 +28,9 @@ function world.load()
   world.spawnPlayer()
 
   table.insert(world.objects, player)
+
+  world.bounds.x2 = world.bounds.x2 + tile.width*2
+  world.bounds.y2 = world.bounds.y2 + tile.width*2
 
   for i=1, current_enemy_spawn do
     -- Blocks

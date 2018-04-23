@@ -14,6 +14,7 @@ require "obj/Slash"
 require "obj/Sword"
 require "obj/Player"
 require "obj/Enemy"
+require "obj/EnemyB"
 require "obj/Block"
 
 --[[ Global constants ]]
@@ -49,7 +50,6 @@ function love.load()
   camera:setFollowLerp(0.1)
   camera:setFollowStyle("LOCKON")
 
-  world.load()
   tile = {
     width = 100,
     height = 100,
@@ -60,6 +60,8 @@ function love.load()
   tile.actual_width = tile.sprite:getWidth()
   tile.scale_x = tile.width / tile.actual_width
   tile.scale_y = tile.height / tile.actual_height
+
+  world.load()
 
   turn_timer = Timer()
   turn_timer_tag = turn_timer:every(TURN_DURATION, nextTurn)

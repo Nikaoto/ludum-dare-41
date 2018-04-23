@@ -13,6 +13,10 @@ function Block:new(x, y, width, height, health)
   self.health = health or Block.HEALTH
 
   self.dead = false
+
+  --[[local b = 
+  if wolrd.checkBlockCollision(self.x, self.y, self.width, self.height) then
+  end--]]
 end
 
 function Block:draw()

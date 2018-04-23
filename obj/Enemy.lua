@@ -4,10 +4,12 @@ Enemy = Object:extend()
 Enemy.STAND_CHANCE = 0.35
 Enemy.HEALTH = 70
 Enemy.AGGRO_DISTANCE = 150
-Enemy.FLEE_DISTANCE = 250
 Enemy.ATTACK_DISTANCE = 50
 Enemy.IDLE_MOVE_SPEED = 200
 Enemy.AGGRO_MOVE_SPEED = 500
+Enemy.DASH_DISTANCE = 100
+Enemy.DASH_TIME = 0.15
+Enemy.DASH_COOLDOWN = 1.5
 
 --[[ Animation ]]
 Enemy.spritesheet = love.graphics.newImage("res/enemy.png")
@@ -41,6 +43,8 @@ function Enemy:new(x, y)
   self.aggro_move_speed = Enemy.AGGRO_MOVE_SPEED
   self.standing = false
   self.attacking = true
+  self.dashing = false
+  self.can_dash = true
 
   self.sword = Sword(self.name)
 
@@ -65,12 +69,17 @@ function Enemy:new(x, y)
     self.standing = lume.random(1) > Enemy.STAND_CHANCE
   end)
 
+  self.dash_timer = Timer()
+  self.dash_cooldown = Timer()
+
   self.attack_timer = Timer()
 end
 
 function Enemy:updateAI(dt)
   self.swing_timer:update(dt)
   self.movement_timer:update(dt)
+  self.dash_timer:update(dt)
+  self.dash_cooldown:update(dt)
   self.attack_timer:update(dt)
 
   if self:aggroed() then
@@ -143,8 +152,27 @@ function Enemy:attackPlayer(dt)
       self.aggro_move_speed = Enemy.AGGRO_MOVE_SPEED
       self.attacking = false
     end)
-  else
-    self.aggro_move_speed = self.aggro_move_speed - self.aggro_move_speed*0.9*dt
+  elseif self.can_dash then
+    self.can_dash = false
+    sounds.play("dash")
+    self.dashing = true
+    -- Direction of dash
+    local aim_angle = lume.angle(player:getX(), player:getY(), self.x, self.y) - math.pi
+    -- Dash vector
+    local dash_x, dash_y = lume.vector(aim_angle, Enemy.DASH_DISTANCE)
+    -- Dash final destination
+    local fx, fy =dash_x + self.x, dash_y + self.y
+
+    -- Start dash countdown
+    self.dash_timer:tween(Enemy.DASH_TIME, self, {
+      x = fx, 
+      y = fy
+    }, "out-quad", function()
+      self.dashing = false
+      self.dash_cooldown:after(Enemy.DASH_COOLDOWN, function() self.can_dash = true end)
+    end)
+
+    --self.aggro_move_speed = self.aggro_move_speed - self.aggro_move_speed*0.9*dt
   end
 end
 
@@ -171,6 +199,8 @@ function Enemy:destroy()
 end
 
 function Enemy:takeDamage(amount)
+  if self.dashing then amount = math.ceil(amount/2) end
+
   self.health = self.health - amount
   if self.health <= 0 then
     self:destroy()
