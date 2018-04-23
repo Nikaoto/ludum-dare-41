@@ -195,6 +195,17 @@ function Player:destroy()
 end
 
 function Player:move(dx, dy)
+  local next_x, next_y = self.x + dx, self.y + dy
+
+  if next_x < world.bounds.x1 or next_x > world.bounds.x2 then
+    dx = 0
+  end
+
+  if next_y < world.bounds.y1 or next_y > world.bounds.y2 then
+    dy = 0
+  end
+
+
   if dx ~= 0 or dy ~= 0 then
     if not self.dashing then
       self.x = self.x + dx
@@ -204,4 +215,8 @@ function Player:move(dx, dy)
   else
     self.moving = false
   end
+end
+
+function Player:outOfBounds(next_x, next_y)
+  return world.checkOutOfBounds(self.x + next_x, self.y + next_y, self.width, self.height)
 end
