@@ -1,7 +1,7 @@
 Enemy = Object:extend()
 
 --[[ Global Constants ]]
-Enemy.STAND_CHANCE = 0.5
+Enemy.STAND_CHANCE = 0.4
 Enemy.HEALTH = 70
 Enemy.AGGRO_DISTANCE = 150
 Enemy.FLEE_DISTANCE = 250
@@ -53,7 +53,7 @@ function Enemy:new(x, y)
 
   -- Timers
   self.swing_timer = Timer()
-  self.swing_timer:every({1, 10}, function()
+  self.swing_timer:every({1, 5}, function()
     local aim_angle = lume.angle(player:getX(), player:getY(), self.x, self.y)
     local sx, sy = lume.vector(aim_angle, Slash.DISTANCE)
     self.sword:swing(self:getX() + sx, self:getY() + sy, lume.random(3.14))
@@ -136,7 +136,7 @@ function Enemy:attackPlayer()
   if not self.attacking then
     self.attacking = true
     local aim_angle = lume.angle(player:getX(), player:getY(), self.x, self.y)
-    local sx, sy = lume.vector(aim_angle, Slash.DISTANCE)
+    local sx, sy = lume.vector(aim_angle, Enemy.ATTACK_DISTANCE)
     self.sword:swing(self:getX() + sx, self:getY() + sy, lume.random(math.pi))
 
     self.attack_timer:after({1, 2}, function() 
