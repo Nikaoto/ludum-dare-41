@@ -110,17 +110,29 @@ function drawMenu()
   love.graphics.setColor(1, 1, 1, 1)
   -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
   local scale = 1.8
-  love.graphics.printf("Click anywhere to start", 0, conf.window.height*0.6, 
-  conf.window.width/scale, 'center', 0, scale, scale)
+  love.graphics.printf("Click anywhere to start", 0, h*0.6, w/scale, 'center', 0, scale, scale)
 end
 
 function drawTurnTimer()
+  local w, h = conf.window.width, conf.window.height
+  local scale = 2
+  local margin_top = 10
   love.graphics.setColor(1, 1, 1)
-  love.graphics.print("TURN: "..current_turn)
   local current_time, max_time = turn_timer:getTime(turn_timer_tag)
   local time_left = max_time - current_time
-  love.graphics.print("\n"..time_left- (time_left % 0.01))
-  love.graphics.setColor(1, 1, 1)
+  
+  -- Set turn color
+  if current_turn == player_turn then
+    love.graphics.setColor(0, 1, 0, 1)
+  else
+    love.graphics.setColor(1, 1, 0, 1)
+  end
+  local turn_text = "TURN: "..current_turn
+  love.graphics.printf(turn_text, 0, margin_top, w/scale, "center", 0, scale, scale)
+
+  local time_text = "\n"..time_left - (time_left % 0.01)
+  love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.printf(time_text, 0, margin_top, w/scale, "center", 0, scale, scale)
 end
 
 function checkCollision(x1,y1,w1,h1, x2,y2,w2,h2)
