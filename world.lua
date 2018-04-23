@@ -12,8 +12,9 @@ current_enemy_spawn = 3
 function world.load()
   math.randomseed(os.time())
   world.objects = {}
+  resetTurnTimer()
+  world.spawnPlayer()
 
-  player = Player()
   table.insert(world.objects, player)
   for i=1, current_enemy_spawn do
     table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
@@ -39,8 +40,7 @@ function world.update(dt)
 
   -- Check level finished (only player left)
   if #world.objects == 1 then
-    print("DONE")
-    current_enemy_spawn = math.ceil(current_enemy_spawn * lume.random(2, current_enemy_spawn/2))
+    world.nextLevel()
   end
 end
 
@@ -61,6 +61,23 @@ function world.draw()
     end
   end
 end
+
+function world.nextLevel()
+  current_level = current_level + 1
+  current_enemy_spawn = current_enemy_spawn + math.ceil(lume.random(current_level, current_level*2))
+  game_started = false
+  world.load()
+end
+
+function world.spawnPlayer()
+  local margin = 100
+  player = Player(math.ceil(lume.random(
+    world.bounds.x1 + margin, world.bounds.y1 + margin, 
+    world.bounds.x2 - margin, world.bounds.y2 - margin)))
+end
+
+
+--[[ Utils ]]
 
 function world.checkFirstCollision(x, y, w, h)
   for i, obj in pairs(world.objects) do

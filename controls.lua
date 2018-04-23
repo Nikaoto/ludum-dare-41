@@ -88,6 +88,7 @@ function controls.mousepressed(x, y, button)
   else
     sounds.play("turn")
     game_started = true
+    first_time = false
   end
 end
 

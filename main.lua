@@ -21,6 +21,7 @@ player_turn = "Player"
 enemy_turn = "Enemy"
 current_level = 1
 score = 0
+first_time = true
 game_started = false
 current_turn = player_turn
 
@@ -84,10 +85,11 @@ function love.draw()
   camera:draw()
   drawTurnTimer()
 
-  if not game_started then
-    drawMenu()
+  if first_time and not game_started then
+    drawIntroScreen()
   end
 
+  drawLevelOverlay()
   controls.drawMouse()
 end
 
@@ -105,7 +107,29 @@ function love.mousereleased(x, y, button)
   controls.mousereleased(x, y, button)
 end
 
-function drawMenu()
+function resetTurnTimer()
+  if turn_timer then
+    turn_timer:destroy()
+    turn_timer = Timer()
+    turn_timer_tag = turn_timer:every(TURN_DURATION, function()
+      sounds.play("turn")
+      if current_turn == player_turn then
+        current_turn = enemy_turn
+      else
+        current_turn = player_turn
+      end
+    end)  
+  end
+end
+
+function drawLevelOverlay()
+  local margin = 10
+  local scale = 2
+  love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.print("Level "..current_level, margin, margin, 0, scale, scale)
+end
+
+function drawIntroScreen()
   local w, h = conf.window.width, conf.window.height
   love.graphics.setColor(0, 0, 0, 0.9)
   love.graphics.rectangle("fill", w/4, h/4, w/2, h/2)
