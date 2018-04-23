@@ -29,8 +29,8 @@ function world.load()
 
   table.insert(world.objects, player)
 
-  world.bounds.x2 = world.bounds.x2 + tile.width*2
-  world.bounds.y2 = world.bounds.y2 + tile.width*2
+  world.bounds.x2 = world.bounds.x2 + tile.width
+  world.bounds.y2 = world.bounds.y2 + tile.width
 
   for i=1, current_enemy_spawn do
     -- Blocks
