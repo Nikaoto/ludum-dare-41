@@ -9,7 +9,11 @@ conf.mouse = {
   visible = false
 }
 
-conf.load = function()
-  love.window.setMode(conf.window.width, conf.window.height)
+function love.conf(t)
+  t.window.width = conf.window.width
+  t.window.height = conf.window.height
+end
+
+function conf.load()
   love.mouse.setVisible(conf.mouse.visible)
 end

@@ -19,10 +19,8 @@ enemy_turn = "Enemy"
 
 current_turn = player_turn
 
-
 function love.load()
   conf.load()
-
   camera = Camera()
   camera:setFollowLerp(0.1)
   camera:setFollowStyle("LOCKON")
@@ -33,6 +31,7 @@ function love.load()
     height = 100,
     sprite = love.graphics.newImage("res/tile.jpg")
   }
+  tile.sprite:setFilter("nearest", "nearest")
   tile.actual_height = tile.sprite:getHeight()
   tile.actual_width = tile.sprite:getWidth()
   tile.scale_x = tile.width / tile.actual_width

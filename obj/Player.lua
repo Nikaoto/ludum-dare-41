@@ -5,9 +5,10 @@ Player.DASH_TIME = 0.25
 Player.NUDGE_TIME = 0.21
 Player.HEALTH = 100
 
-Player.spritesheet = love.graphics.newImage("res/player.png")
-Player.sheet_width = 52
-Player.sheet_height = 30
+Player.spritesheet = love.graphics.newImage("res/player1.png")
+Player.spritesheet:setFilter("nearest", "nearest")
+Player.sheet_width = 13*4
+Player.sheet_height = 15*2
 Player.sprite_width = 13
 Player.sprite_height = 15
 Player.grid = anim8.newGrid(Player.sprite_width, Player.sprite_height, Player.sheet_width, Player.sheet_height)
@@ -24,7 +25,7 @@ function Player:new(x, y)
   self.y = y or 100
   self.scale_x = 1
   self.scale_y = 1
-  self.width = 58
+  self.width = 55
   self.height = 60
   self.ox = self.width/2
   self.oy = self.height/2
