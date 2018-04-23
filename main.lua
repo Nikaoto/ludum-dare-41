@@ -13,21 +13,25 @@ require "obj/Sword"
 require "obj/Player"
 require "obj/Enemy"
 
-DISABLE_TURNS = false
+--[[ Global constants ]]
 TURN_DURATION = 3
 player_turn = "Player"
 enemy_turn = "Enemy"
-
 current_level = 1
+score = 0
 game_started = false
-
 current_turn = player_turn
 
+-- Load font
 font = love.graphics.newImageFont("res/imagefont.png",
     " abcdefghijklmnopqrstuvwxyz" ..
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
     "123456789.,!?-+/():;%&`'*#=[]\"")
 font:setFilter("nearest", "nearest")
+
+-- for testing
+DISABLE_TURNS = false
+INVINCIBLE = false
 
 function love.load()
   conf.load()
@@ -125,3 +129,8 @@ end
 
 --[[ Utils ]]
 function sq(n) return n*n end
+
+function drawCollider(obj)
+  love.graphics.setColor(1, 0, 0)
+  love.graphics.rectangle("line", obj.x, obj.y, obj.width, obj.height)
+end

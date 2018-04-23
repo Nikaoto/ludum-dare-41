@@ -75,8 +75,8 @@ end
 
 function Slash:draw()
   -- draw hitbox
-  -- love.graphics.setColor(0, 1, 0)  
-  -- love.graphics.rectangle("line", self.x-self.ox, self.y-self.oy, self.width, self.height)
+  love.graphics.setColor(0, 1, 0)  
+  love.graphics.rectangle("line", self.x-self.ox, self.y-self.oy, self.width, self.height)
 
   if self.active then
     love.graphics.setColor(self.color)

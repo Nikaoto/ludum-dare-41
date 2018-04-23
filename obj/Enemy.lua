@@ -22,8 +22,8 @@ Enemy.run_animation = anim8.newAnimation(Enemy.grid("1-4",2), 0.1)
 
 
 --[[ Utils ]]
-function Enemy:getX() return self.x - self.ox end
-function Enemy:getY() return self.y - self.oy end
+function Enemy:getX() return self.x + self.ox end
+function Enemy:getY() return self.y + self.oy end
 
 --[[ Constructor ]]
 function Enemy:new(x, y)
@@ -61,7 +61,7 @@ function Enemy:new(x, y)
 
   self.movement_timer = Timer()
   self.movement_timer:every({1, 3}, function()
-    self.move_direction = lume.random(math.pi)
+    self.move_direction = lume.random(math.pi*2)
     self.standing = lume.random(1) > Enemy.STAND_CHANCE
   end)
 
@@ -82,7 +82,7 @@ function Enemy:updateAI(dt)
       -- wander around
       if world.checkOutOfBounds(self.x, self.y, self.width, self.height) then
         print("bounds")
-        self.move_direction = self.move_direction + math.pi/2
+        self.move_direction = lume.random(math.pi*2)
       end
 
       local dx, dy = lume.vector(self.move_direction, self.idle_move_speed)
@@ -118,15 +118,17 @@ end
 function Enemy:draw()
   if not self.dead then
     love.graphics.setColor(1, 1, 1)
-    self.current_animation:draw(Enemy.spritesheet, self.x, self.y, 0, 
-        self.sprite_scale_x, 
+    self.current_animation:draw(self.spritesheet, self:getX(), self:getY(), 0, 
+        self.sprite_scale_x * self:getDirection(), 
         self.sprite_scale_y,
-        Enemy.sprite_width/2,
-        Enemy.sprite_height/2)
-
+        self.sprite_width/2,
+        self.sprite_height/2)
+    
     love.graphics.setColor(1, 0, 0)
-    love.graphics.circle("line", self.x, self.y, Enemy.AGGRO_DISTANCE)
-    self.sword:draw(self.x, self.y)
+    love.graphics.circle("line", self:getX(), self:getY(), Enemy.AGGRO_DISTANCE)
+    self.sword:draw(self:getX(), self:getY())
+
+    drawCollider(self)
   end
 end
 

@@ -4,6 +4,8 @@ Player.DASH_DISTANCE = 220
 Player.DASH_TIME = 0.25
 Player.NUDGE_TIME = 0.21
 Player.HEALTH = 100
+Player.DIRECT_DAMAGE = 10
+Player.SLASH_DAMAGE = 30
 
 Player.spritesheet = love.graphics.newImage("res/player.png")
 Player.spritesheet:setFilter("nearest", "nearest")
@@ -42,15 +44,13 @@ Player.run_animation = anim8.newAnimation(Player.grid("1-4",1, "1-4",2), 0.1)
 --]]
 
 --[[ Utils ]]
-function Player:getX() return self.x - self.ox end
-function Player:getY() return self.y - self.oy end
+function Player:getX() return self.x + self.ox end
+function Player:getY() return self.y + self.oy end
 
 --[[ Constructor ]]
 function Player:new(x, y)
   self.x = x or 100
   self.y = y or 100
-  self.scale_x = 1
-  self.scale_y = 1
   self.width = 55
   self.height = 60
   self.ox = self.width/2
@@ -101,12 +101,14 @@ function Player:draw()
     love.graphics.setColor(1, 1, 1)
   end
 
-  self.current_animation:draw(Player.spritesheet, self.x, self.y, 0, 
-      self.scale_x * self.sprite_scale_x * self.direction, 
-      self.scale_y * self.sprite_scale_y,
-      Player.sprite_width/2,
-      Player.sprite_height/2)
-  self.sword:draw(self.x, self.y)
+  self.current_animation:draw(self.spritesheet, self:getX(), self:getY(), 0, 
+      self.sprite_scale_x * self.direction, 
+      self.sprite_scale_y,
+      self.sprite_width/2,
+      self.sprite_height/2)
+  self.sword:draw(self:getX(), self:getY())
+
+  drawCollider(self)
 end
 
 --[[ Attack ]]
@@ -119,7 +121,21 @@ function Player:attack(mouse_x, mouse_y)
   -- Slash sprite rotation
   local rot = lume.random(math.pi)
   -- Swing
-  self.sword:swing(self.x + sx, self.y + sy, rot)
+  self.sword:swing(self.x + sx, self.y + sy, rot, Player.SLASH_DAMAGE)
+  -- Damage enemies standing ON player
+  local hit_objects = world.checkCollisions(self.x, self.y, self.width, self.height)
+  -- Remove self from collisions
+  hit_objects = lume.filter(hit_objects, function(x) return x.name ~= self.name end)
+  if #hit_objects ~= 0 then
+    sounds.play("slash_hit")
+    -- Deal damages
+    for i, obj in pairs(hit_objects) do
+      if obj.takeDamage then
+        obj:takeDamage(Player.DIRECT_DAMAGE)
+      end
+    end
+  end
+
   -- Nudge player
   if not self.moving then
     self.nudging = true
@@ -144,15 +160,10 @@ function Player:dash(mouse_x, mouse_y)
     -- Dash final destination
     local fx, fy = self.dash_x + self.x, self.dash_y + self.y
 
-    -- Squish player
-    self.scale_y = self.x / (self.x + fx * Player.DASH_TIME)
-    self.scale_x = self.y / (self.y + fy * Player.DASH_TIME)
     -- Start dash countdown
     self.dash_timer:tween(Player.DASH_TIME, self, {
       x = fx, 
-      y = fy,
-      scale_x = 1,
-      scale_y = 1
+      y = fy
     }, "out-quad", function()
       self.dashing = false
     end)
@@ -161,12 +172,14 @@ end
 
 --
 function Player:takeDamage(amount)
-  if not self.dashing then
-    self.health = self.health - amount
-    camera:flash(0.05, {1, 0, 0, 0.3})
-    if self.health <= 0 then
-      print(self.name, "DEAD")
-      self:destroy()
+  if not INVINCIBLE then
+    if not self.dashing then
+      self.health = self.health - amount
+      camera:flash(0.05, {1, 0, 0, 0.3})
+      if self.health <= 0 then
+        print(self.name, "DEAD")
+        self:destroy()
+      end
     end
   end
 end
