@@ -124,6 +124,7 @@ end
 --[[ Dash ]]
 function Player:dash(mouse_x, mouse_y)
   if not self.dashing then
+    sounds.play("dash")
     self.dashing = true
     -- Direction of dash
     local aim_angle = lume.angle(self:getX(), self:getY(), mouse_x, mouse_y)

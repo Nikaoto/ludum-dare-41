@@ -7,6 +7,7 @@ Camera = require "lib/Camera"
 require "conf"
 require "controls"
 require "world"
+require "sounds"
 require "obj/Slash"
 require "obj/Sword"
 require "obj/Player"
@@ -39,6 +40,7 @@ function love.load()
 
   turn_timer = Timer()
   turn_timer_tag = turn_timer:every(TURN_DURATION, function()
+    sounds.play("turn")
     if current_turn == player_turn then
       current_turn = enemy_turn
     else

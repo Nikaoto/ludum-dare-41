@@ -48,11 +48,14 @@ function Slash:new(args, callback)
     end
   end
 
-  -- Set visual effects depending on hit objects
+  -- If hit, then add effects
   if hit_objects and #hit_objects ~= 0 then
+    sounds.play("slash_hit")
     self.color = {1, 0, 0}
     self.scale = self.scale + #hit_objects
     self.slash_time = self.slash_time + 0.2 * #hit_objects
+  else
+    sounds.play("slash")
   end
   camera:shake(self.shake, self.slash_time, 100)
 
