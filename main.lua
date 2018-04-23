@@ -144,7 +144,16 @@ function drawLevelOverlay()
 
   -- Draw player health
   if player then
-
+    if player.health then
+      local max_w = w * 0.2
+      local height = h * 0.03
+      local width = math.ceil(player.health * max_w / Player.HEALTH) 
+      local pad = 6
+      love.graphics.setColor(0, 0, 0, 1)
+      love.graphics.rectangle("fill", margin, margin, max_w + pad*2, height + pad*2)
+      love.graphics.setColor(0.92, 0, 0, 1)
+      love.graphics.rectangle("fill", margin + pad, margin + pad, width, height)
+    end
   end
 end
 
