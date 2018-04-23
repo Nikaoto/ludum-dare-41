@@ -207,6 +207,7 @@ function Player:move(dx, dy)
   else
     local next_x, next_y = self.x + dx, self.y + dy
 
+    -- World bound collisions
     if next_x < world.bounds.x1 or next_x - self.width > world.bounds.x2 then
       dx = 0
     end
@@ -215,6 +216,7 @@ function Player:move(dx, dy)
       dy = 0
     end
 
+    -- Block collisions
     local block = world.checkBlockCollision(self.x, self.y, self.width, self.height)
     if block then
       if next_x < block.x + block.width or next_x + self.width > block.x then

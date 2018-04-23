@@ -40,8 +40,8 @@ font = love.graphics.newImageFont("res/imagefont.png",
 font:setFilter("nearest", "nearest")
 
 -- for testing
-DISABLE_TURNS = false
-INVINCIBLE = false
+DISABLE_TURNS = true
+INVINCIBLE = true
 
 function love.load()
   conf.load()
@@ -130,6 +130,7 @@ function resetTurnTimer()
   if turn_timer then
     turn_timer:destroy()
     turn_timer = Timer()
+    current_turn = player_turn
     turn_timer_tag = turn_timer:every(TURN_DURATION, nextTurn)  
   end
 end

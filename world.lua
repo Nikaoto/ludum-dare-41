@@ -4,8 +4,8 @@ world.blocks = {}
 world.bounds = {
   x1 = 0,
   y1 = 0,
-  x2 = 1000,
-  y2 = 1000
+  x2 = 600,
+  y2 = 600
 }
 
 STARTING_ENEMY_SPAWN = 3
@@ -35,13 +35,13 @@ function world.load()
   for i=1, current_enemy_spawn do
     -- Blocks
     if current_level > 2 and i % BLOCK_RATIO == 0 then
-      table.insert(world.blocks, Block(lume.random(conf.window.width), lume.random(conf.window.height)))
+      table.insert(world.blocks, Block(lume.random(world.bounds.x2), lume.random(world.bounds.y2)))
     end
     -- Enemies
     if current_level > 3 and i % ENEMYB_RATIO == 0 then
-      table.insert(world.objects, EnemyB(lume.random(conf.window.width), lume.random(conf.window.height)))
+      table.insert(world.objects, EnemyB(lume.random(world.bounds.x2), lume.random(world.bounds.y2)))
     else
-      table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
+      table.insert(world.objects, Enemy(lume.random(world.bounds.x2), lume.random(world.bounds.y2)))
     end
   end
 end
@@ -81,10 +81,13 @@ end
 function world.draw()
   love.graphics.clear(0.353, 0.404, 0.451, 0.9)
   love.graphics.setColor(1, 1, 1)
+  
+  -- Draw bounds
+  --love.graphics.rectangle("fill", world.bounds.x1, world.bounds.y1, world.bounds.x2, world.bounds.y2)
 
   -- Floor
-  for x=0, world.bounds.x2, tile.width do
-    for y=0, world.bounds.y2, tile.height do
+  for x=1, world.bounds.x2, tile.width do
+    for y=1, world.bounds.y2, tile.height do
       love.graphics.draw(tile.sprite, x, y, 0, tile.scale_x, tile.scale_y)
     end
   end
@@ -102,6 +105,7 @@ function world.draw()
       block:draw()
     end
   end
+
 end
 
 function world.lose()
@@ -114,7 +118,7 @@ end
 function world.nextLevel()
   sounds.play("win")
   current_level = current_level + 1
-  current_enemy_spawn = current_enemy_spawn + math.ceil(lume.random(current_level, current_level*2))
+  current_enemy_spawn = current_enemy_spawn + math.ceil(lume.random(current_level))
   game_started = false
   won = true
   world.load()
