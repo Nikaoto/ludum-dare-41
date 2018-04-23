@@ -67,8 +67,10 @@ end
 
 --[[ Update ]]
 function controls.update(dt)
-  controls.movement(dt)
-  controls.aim(dt)
+  if not player.dead and current_turn == player_turn or DISABLE_TURNS then
+    controls.movement(dt)
+    controls.aim(dt)
+  end
 end
 
 --[[ Callbacks ]]

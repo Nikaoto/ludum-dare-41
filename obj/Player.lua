@@ -152,7 +152,7 @@ end
 function Player:takeDamage(amount)
   if not self.dashing then
     self.health = self.health - amount
-
+    camera:flash(0.05, {1, 0, 0, 0.3})
     if self.health <= 0 then
       print(self.name, "DEAD")
       self:destroy()

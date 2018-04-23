@@ -5,12 +5,6 @@ sounds = {
   ["turn"] = love.audio.newSource("res/turn.wav", "static")
 }
 
-local mt = {__call = function(self) self[math.random(#self)]:play() end}
-local loadTable = function(sound_table) setmetatable(sound_table, mt) end
-
---loadTable(sounds["slash"])
---loadTable(sounds["slash_hit"])
-
 sounds.play = function(sound_name)
   if sounds[sound_name] then
     if sounds[sound_name]:isPlaying() then

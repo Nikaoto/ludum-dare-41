@@ -74,8 +74,10 @@ function Slash:update(dt)
 end
 
 function Slash:draw()
-  love.graphics.setColor(0, 1, 0)  
-  love.graphics.rectangle("line", self.x-self.ox, self.y-self.oy, self.width, self.height)
+  -- draw hitbox
+  -- love.graphics.setColor(0, 1, 0)  
+  -- love.graphics.rectangle("line", self.x-self.ox, self.y-self.oy, self.width, self.height)
+  
   if self.active then
     love.graphics.setColor(self.color)
     self.animation:draw(Slash.spritesheet, self.x, self.y, self.rotation, Slash.scale, Slash.scale, 
