@@ -208,11 +208,11 @@ function Player:move(dx, dy)
     local next_x, next_y = self.x + dx, self.y + dy
 
     -- World bound collisions
-    if next_x < world.bounds.x1 or next_x - self.width > world.bounds.x2 then
+    if next_x < world.bounds.x1 or next_x + self.width > world.bounds.x2 then
       dx = 0
     end
 
-    if next_y < world.bounds.y1 or next_y - self.height > world.bounds.y2 then
+    if next_y < world.bounds.y1 or next_y + self.height > world.bounds.y2 then
       dy = 0
     end
 

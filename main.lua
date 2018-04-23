@@ -40,8 +40,8 @@ font = love.graphics.newImageFont("res/imagefont.png",
 font:setFilter("nearest", "nearest")
 
 -- for testing
-DISABLE_TURNS = true
-INVINCIBLE = true
+DISABLE_TURNS = false
+INVINCIBLE = false
 
 function love.load()
   conf.load()
@@ -136,10 +136,16 @@ function resetTurnTimer()
 end
 
 function drawLevelOverlay()
+  local w, h = conf.window.width, conf.window.height
   local margin = 10
   local scale = 2
   love.graphics.setColor(1, 1, 1, 1)
-  love.graphics.print("Level "..current_level, margin, margin, 0, scale, scale)
+  love.graphics.printf("Level "..current_level, 0, margin, w/scale - margin, "right", 0, scale, scale)
+
+  -- Draw player health
+  if player then
+
+  end
 end
 
 function drawIntroScreen()

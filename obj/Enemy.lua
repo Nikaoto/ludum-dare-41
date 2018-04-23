@@ -10,6 +10,7 @@ Enemy.AGGRO_MOVE_SPEED = 500
 Enemy.DASH_DISTANCE = 200
 Enemy.DASH_TIME = 0.15
 Enemy.DASH_COOLDOWN = 1.5
+Enemy.GET_ATTACK_COOLDOWN = function() return math.ceil(lume.random(1.5, 3)) end
 
 --[[ Animation ]]
 Enemy.spritesheet = love.graphics.newImage("res/enemy.png")
@@ -152,7 +153,7 @@ function Enemy:attackPlayer(dt)
     local sx, sy = lume.vector(aim_angle, Enemy.ATTACK_DISTANCE)
     self.sword:swing(self:getX() + sx, self:getY() + sy, lume.random(math.pi))
 
-    self.attack_timer:after({1, 2}, function()
+    self.attack_timer:after(Enemy.GET_ATTACK_COOLDOWN(), function()
       self.aggro_move_speed = Enemy.AGGRO_MOVE_SPEED
       self.attacking = false
     end)

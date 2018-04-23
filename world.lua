@@ -32,16 +32,20 @@ function world.load()
   world.bounds.x2 = world.bounds.x2 + tile.width
   world.bounds.y2 = world.bounds.y2 + tile.width
 
+  local spawn_margin = 70
+  local max_spawn_x = world.bounds.x2 - spawn_margin
+  local max_spawn_y = world.bounds.y2 - spawn_margin
+
   for i=1, current_enemy_spawn do
     -- Blocks
     if current_level > 2 and i % BLOCK_RATIO == 0 then
-      table.insert(world.blocks, Block(lume.random(world.bounds.x2), lume.random(world.bounds.y2)))
+      table.insert(world.blocks, Block(lume.random(max_spawn_x), lume.random(max_spawn_y)))
     end
     -- Enemies
     if current_level > 3 and i % ENEMYB_RATIO == 0 then
-      table.insert(world.objects, EnemyB(lume.random(world.bounds.x2), lume.random(world.bounds.y2)))
+      table.insert(world.objects, EnemyB(lume.random(max_spawn_x), lume.random(max_spawn_y)))
     else
-      table.insert(world.objects, Enemy(lume.random(world.bounds.x2), lume.random(world.bounds.y2)))
+      table.insert(world.objects, Enemy(lume.random(max_spawn_x), lume.random(max_spawn_y)))
     end
   end
 end
@@ -81,7 +85,7 @@ end
 function world.draw()
   love.graphics.clear(0.353, 0.404, 0.451, 0.9)
   love.graphics.setColor(1, 1, 1)
-  
+
   -- Draw bounds
   --love.graphics.rectangle("fill", world.bounds.x1, world.bounds.y1, world.bounds.x2, world.bounds.y2)
 
