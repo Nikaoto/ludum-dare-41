@@ -35,7 +35,9 @@ function world.update(dt)
 
   -- Clear corpses
   for _, i in pairs(corpse_indexes) do
-    table.remove(world.objects, i)
+    if world.objects[i] and world.objects[i].dead then
+      table.remove(world.objects, i)
+    end
   end
 
   -- Check level finished (only player left)
