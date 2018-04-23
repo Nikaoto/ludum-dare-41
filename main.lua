@@ -110,7 +110,10 @@ function drawMenu()
   love.graphics.setColor(1, 1, 1, 1)
   -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
   local scale = 1.8
-  love.graphics.printf("Click anywhere to start", 0, h*0.6, w/scale, 'center', 0, scale, scale)
+  love.graphics.printf("Click anywhere to start", w*0.3, h*0.3, w/scale, 'left', 0, scale, scale)
+  local instructions_text = "Move - WASD\nAim - Mouse\nSlash - Left Mouse Button\nDash - Right Mouse Button\n\n3 second turns\nKill them all"
+  love.graphics.printf(instructions_text, w*0.3, h*0.4, w/scale, 'left', 0, scale, scale)
+
 end
 
 function drawTurnTimer()
