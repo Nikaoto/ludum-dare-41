@@ -1,5 +1,11 @@
 world = {}
 world.objects = {}
+world.bounds = {
+  x1 = 0,
+  y1 = 0,
+  x2 = 800,
+  y2 = 800
+}
 
 function world.load()
   math.randomseed(os.time())
@@ -67,4 +73,9 @@ function world.checkCollisions(x, y, w, h)
     end
   end
   return collided_objects
+end
+
+function world.checkOutOfBounds(x, y, w, h)
+  return x < world.bounds.x1 or y < world.bounds.y1
+    or x + w > world.bounds.x2 or y + h > world.bounds.y2
 end

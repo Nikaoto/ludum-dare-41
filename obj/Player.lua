@@ -5,15 +5,31 @@ Player.DASH_TIME = 0.25
 Player.NUDGE_TIME = 0.21
 Player.HEALTH = 100
 
-Player.spritesheet = love.graphics.newImage("res/player1.png")
+Player.spritesheet = love.graphics.newImage("res/player.png")
 Player.spritesheet:setFilter("nearest", "nearest")
 Player.sheet_width = 13*4
 Player.sheet_height = 15*2
 Player.sprite_width = 13
 Player.sprite_height = 15
 Player.grid = anim8.newGrid(Player.sprite_width, Player.sprite_height, Player.sheet_width, Player.sheet_height)
-Player.idle_animation = anim8.newAnimation(Player.grid(1,1), 0.2)
+Player.idle_animation = anim8.newAnimation(Player.grid("1-4",1), 0.15)
 Player.run_animation = anim8.newAnimation(Player.grid("1-4",2), 0.1)
+
+--[[
+-- Run anim
+Player.runsheet = love.graphics.newImage("res/player_run.png")
+
+Player.run_sprite_width = Player.runsheet:getWidth()/4
+Player.run_sprite_height = Player.runsheet:getHeight()/2
+
+Player.sprite_width = Player.runsheet:getWidth()/4
+Player.sprite_height = Player.runsheet:getHeight()/2
+
+Player.run_grid = anim8.newGrid(Player.run_sprite_width, Player.run_sprite_height, 
+  Player.runsheet:getWidth(), Player.runsheet:getHeight())
+
+Player.run_animation = anim8.newAnimation(Player.run_grid("1-4",1, "1-4",2), 0.1)
+--]]
 
 --[[ Utils ]]
 function Player:getX() return self.x - self.ox end

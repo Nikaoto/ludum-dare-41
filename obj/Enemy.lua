@@ -9,6 +9,18 @@ Enemy.ATTACK_DISTANCE = 50
 Enemy.IDLE_MOVE_SPEED = 200
 Enemy.AGGRO_MOVE_SPEED = 500
 
+--[[ Animation ]]
+Enemy.spritesheet = love.graphics.newImage("res/enemy.png")
+Enemy.spritesheet:setFilter("nearest", "nearest")
+Enemy.sheet_width = 13*4
+Enemy.sheet_height = 15*2
+Enemy.sprite_width = 13
+Enemy.sprite_height = 15
+Enemy.grid = anim8.newGrid(Enemy.sprite_width, Enemy.sprite_height, Enemy.sheet_width, Enemy.sheet_height)
+Enemy.idle_animation = anim8.newAnimation(Enemy.grid("1-4",1), 0.15)
+Enemy.run_animation = anim8.newAnimation(Enemy.grid("1-4",2), 0.1)
+
+
 --[[ Utils ]]
 function Enemy:getX() return self.x - self.ox end
 function Enemy:getY() return self.y - self.oy end
@@ -18,7 +30,7 @@ function Enemy:new(x, y)
   self.x = x
   self.y = y
   self.name = "Enemy"
-  self.width = 60
+  self.width = 55
   self.height = 60
   self.health = Enemy.HEALTH
 
@@ -32,6 +44,14 @@ function Enemy:new(x, y)
 
   self.sword = Sword(self.name)
 
+  -- Anims
+  self.sprite_scale_x = self.width / Enemy.sprite_width
+  self.sprite_scale_y = self.height / Enemy.sprite_height
+  self.idle_animation = Enemy.idle_animation:clone()
+  self.run_animation = Enemy.run_animation:clone()
+  self.current_animation = self.idle_animation
+
+  -- Timers
   self.swing_timer = Timer()
   self.swing_timer:every({1, 10}, function()
     local aim_angle = lume.angle(player:getX(), player:getY(), self.x, self.y)
@@ -56,15 +76,24 @@ function Enemy:updateAI(dt)
   if self:aggroed() then
     self:moveTowardsPlayer(dt)
   else
-    -- Random Movement
-    if not self.standing then
+    if self.standing then
+      self.current_animation = self.idle_animation
+    else
+      -- wander around
+      if world.checkOutOfBounds(self.x, self.y, self.width, self.height) then
+        self.move_direction = self.move_direction + math.pi/2
+      end
+
       local dx, dy = lume.vector(self.move_direction, self.idle_move_speed)
       self:move(dx * dt, dy * dt)
+      self.current_animation = self.run_animation
     end
   end
 end
 
 function Enemy:moveTowardsPlayer(dt)
+  self.current_animation = self.run_animation
+
   self.move_direction = lume.angle(self.x, self.y, player.x, player.y)
   local dx, dy = lume.vector(self.move_direction, self.aggro_move_speed)
   self:move(dx * dt, dy * dt)
@@ -80,18 +109,23 @@ end
 function Enemy:update(dt)
   if DISABLE_TURNS or not self.dead and current_turn == self.name then
     self:updateAI(dt)
+    self.current_animation:update(dt)
     self.sword:update(dt)
   end
 end
 
 function Enemy:draw()
   if not self.dead then
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+    love.graphics.setColor(1, 1, 1)
+    self.current_animation:draw(Enemy.spritesheet, self.x, self.y, 0, 
+        self.sprite_scale_x, 
+        self.sprite_scale_y,
+        Enemy.sprite_width/2,
+        Enemy.sprite_height/2)
 
     love.graphics.setColor(1, 0, 0)
-    love.graphics.circle("line", self.x + self.ox, self.y + self.ox, Enemy.AGGRO_DISTANCE)
-    self.sword:draw(self.x + self.ox, self.y + self.oy)
+    love.graphics.circle("line", self.x, self.y, Enemy.AGGRO_DISTANCE)
+    self.sword:draw(self.x, self.y)
   end
 end
 
@@ -115,6 +149,13 @@ end
 
 function Enemy:aggroed()
   return lume.distance(player.x, player.y, self.x, self.y) < Enemy.AGGRO_DISTANCE
+end
+
+function Enemy:getDirection()
+  if self.move_direction > math.pi/2 and self.move_direction < math.pi*3/2 then
+    return 1
+  end
+  return -1
 end
 
 --
