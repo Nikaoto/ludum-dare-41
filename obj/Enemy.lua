@@ -10,7 +10,7 @@ Enemy.AGGRO_MOVE_SPEED = 500
 Enemy.DASH_DISTANCE = 200
 Enemy.DASH_TIME = 0.15
 Enemy.DASH_COOLDOWN = 1.5
-Enemy.GET_ATTACK_COOLDOWN = function() return math.ceil(lume.random(1.5, 3)) end
+Enemy.GET_ATTACK_COOLDOWN = function() return math.ceil(lume.random(2, 4)) end
 
 --[[ Animation ]]
 Enemy.spritesheet = love.graphics.newImage("res/enemy.png")

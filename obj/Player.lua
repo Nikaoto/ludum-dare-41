@@ -178,14 +178,12 @@ function Player:dash(mouse_x, mouse_y)
 end
 
 --
-function Player:takeDamage(amount)
-  if not INVINCIBLE then
-    if not self.dashing then
-      self.health = self.health - amount
-      camera:flash(0.05, {1, 0, 0, 0.3})
-      if self.health <= 0 then
-        self:destroy()
-      end
+function Player:takeDamage(amount, override)
+  if not override or not INVINCIBLE or not self.dashing then
+    self.health = self.health - amount
+    camera:flash(0.05, {1, 0, 0, 0.3})
+    if self.health <= 0 then
+      self:destroy()
     end
   end
 end

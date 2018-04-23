@@ -19,6 +19,7 @@ require "obj/Block"
 
 --[[ Global constants ]]
 TURN_DURATION = 3
+STUCK_DAMAGE = 5
 player_turn = "Player"
 enemy_turn = "Enemy"
 current_level = 1
@@ -123,6 +124,10 @@ function nextTurn()
     current_turn = enemy_turn
   else
     current_turn = player_turn
+  end
+
+  if player and world.checkOutOfBounds(player.x, player.y, player.width, player.height) then
+    player:takeDamage(STUCK_DAMAGE, true)
   end
 end
 
