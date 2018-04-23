@@ -75,14 +75,19 @@ end
 
 --[[ Callbacks ]]
 function controls.mousepressed(x, y, button)
-  if current_turn == player_turn or DISABLE_TURNS then
-    if button == 1 then
-      player:attack(controls.mouse_x, controls.mouse_y)
-    end
+  if game_started then
+    if not player.dead and current_turn == player_turn or DISABLE_TURNS then
+      if button == 1 then
+        player:attack(controls.mouse_x, controls.mouse_y)
+      end
 
-    if button == 2 then
-      player:dash(controls.mouse_x, controls.mouse_y)
+      if button == 2 then
+        player:dash(controls.mouse_x, controls.mouse_y)
+      end
     end
+  else
+    sounds.play("turn")
+    game_started = true
   end
 end
 

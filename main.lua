@@ -18,10 +18,20 @@ TURN_DURATION = 3
 player_turn = "Player"
 enemy_turn = "Enemy"
 
+current_level = 1
+game_started = false
+
 current_turn = player_turn
+
+font = love.graphics.newImageFont("res/imagefont.png",
+    " abcdefghijklmnopqrstuvwxyz" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+    "123456789.,!?-+/():;%&`'*#=[]\"")
+font:setFilter("nearest", "nearest")
 
 function love.load()
   conf.load()
+
   camera = Camera()
   camera:setFollowLerp(0.1)
   camera:setFollowStyle("LOCKON")
@@ -47,14 +57,18 @@ function love.load()
       current_turn = player_turn
     end
   end)
+
+  love.graphics.setFont(font)
 end
 
 function love.update(dt)
-  turn_timer:update(dt)
-  camera:update(dt)
-  camera:follow(player.x, player.y)
-  controls.update(dt)
-  world.update(dt)
+  if game_started then
+    turn_timer:update(dt)
+    camera:update(dt)
+    camera:follow(player.x, player.y)
+    controls.update(dt)
+    world.update(dt)
+  end
 end
 
 function love.draw()
@@ -62,15 +76,13 @@ function love.draw()
   world.draw()
   camera:detach()
   camera:draw()
-  controls.drawMouse()
+  drawTurnTimer()
 
-  -- Draw turn timer
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.print("TURN: "..current_turn)
-  local current_time, max_time = turn_timer:getTime(turn_timer_tag)
-  local time_left = max_time - current_time
-  love.graphics.print("\n"..time_left- (time_left % 0.01))
-  love.graphics.setColor(1, 1, 1)
+  if not game_started then
+    drawMenu()
+  end
+
+  controls.drawMouse()
 end
 
 function love.keypressed(k)
@@ -85,6 +97,26 @@ end
 
 function love.mousereleased(x, y, button)
   controls.mousereleased(x, y, button)
+end
+
+function drawMenu()
+  local w, h = conf.window.width, conf.window.height
+  love.graphics.setColor(0, 0, 0, 0.9)
+  love.graphics.rectangle("fill", w/4, h/4, w/2, h/2)
+  love.graphics.setColor(1, 1, 1, 1)
+  -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
+  local scale = 1.8
+  love.graphics.printf("Click anywhere to start", 0, conf.window.height*0.6, 
+  conf.window.width/scale, 'center', 0, scale, scale)
+end
+
+function drawTurnTimer()
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.print("TURN: "..current_turn)
+  local current_time, max_time = turn_timer:getTime(turn_timer_tag)
+  local time_left = max_time - current_time
+  love.graphics.print("\n"..time_left- (time_left % 0.01))
+  love.graphics.setColor(1, 1, 1)
 end
 
 function checkCollision(x1,y1,w1,h1, x2,y2,w2,h2)
