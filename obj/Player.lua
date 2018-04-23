@@ -49,7 +49,7 @@ function Player:getY() return self.y + self.oy end
 
 --[[ Constructor ]]
 function Player:new(x, y)
-  self.x = x or 100
+  self.x = x or 400
   self.y = y or 100
   self.width = 55
   self.height = 60

@@ -132,7 +132,7 @@ function drawTurnTimer()
 
   local time_text = "\n"..time_left - (time_left % 0.01)
   love.graphics.setColor(1, 1, 1, 1)
-  love.graphics.printf(time_text, 0, margin_top, w/scale, "center", 0, scale, scale)
+  love.graphics.printf(time_text, w/2-40, margin_top, w/scale, "left", 0, scale, scale)
 end
 
 function checkCollision(x1,y1,w1,h1, x2,y2,w2,h2)

@@ -123,7 +123,7 @@ function Enemy:draw()
         self.sprite_scale_y,
         self.sprite_width/2,
         self.sprite_height/2)
-    
+
     love.graphics.setColor(1, 0, 0)
     love.graphics.circle("line", self:getX(), self:getY(), Enemy.AGGRO_DISTANCE)
     self.sword:draw(self:getX(), self:getY())
@@ -156,9 +156,9 @@ end
 
 function Enemy:getDirection()
   if self.move_direction > math.pi/2 and self.move_direction < math.pi*3/2 then
-    return 1
+    return -1
   end
-  return -1
+  return 1
 end
 
 --
