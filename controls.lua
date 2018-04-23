@@ -26,7 +26,7 @@ controls.mouse_y = 0
 
 function controls.movement(dt)
   if current_turn == player_turn or DISABLE_TURNS then
-    dx, dy = 0, 0
+    local dx, dy = 0, 0
      
     if isDown("w") then
       dy = dy - speed * dt

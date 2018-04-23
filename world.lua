@@ -4,8 +4,8 @@ world.blocks = {}
 world.bounds = {
   x1 = 0,
   y1 = 0,
-  x2 = 1000,
-  y2 = 1000
+  x2 = 1100,
+  y2 = 1125
 }
 
 STARTING_ENEMY_SPAWN = 3
@@ -120,6 +120,16 @@ end
 
 function world.checkFirstCollision(x, y, w, h)
   for i, obj in pairs(world.objects) do
+    if obj.x and obj.y and obj.width and obj.height then
+      if checkCollision(x, y, w, h, obj.x, obj.y, obj.width, obj.height) then
+        return obj
+      end
+    end
+  end
+end
+
+function world.checkBlockCollision(x, y, w, h)
+  for i, obj in pairs(world.blocks) do
     if obj.x and obj.y and obj.width and obj.height then
       if checkCollision(x, y, w, h, obj.x, obj.y, obj.width, obj.height) then
         return obj

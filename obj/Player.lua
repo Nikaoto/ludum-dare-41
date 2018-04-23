@@ -141,13 +141,17 @@ function Player:attack(mouse_x, mouse_y)
 
   -- Nudge player
   if not self.moving then
-    self.nudging = true
-    self.swing_nudge:tween(Player.NUDGE_TIME, self, {
-      x = self.x + sx*0.3, 
-      y = self.y + sy*0.3
-    }, "out-cubic", function() 
-      self.nudging = false
-    end)
+
+    local nx, ny = self.x + sx*0.3, self.y + sy*0.3
+    if not world.checkOutOfBounds(nx, ny, self.width, self.height) then
+      self.nudging = true
+      self.swing_nudge:tween(Player.NUDGE_TIME, self, {
+        x = nx, 
+        y = ny
+      }, "out-cubic", function() 
+        self.nudging = false
+      end)
+    end
   end
 end
 
@@ -198,25 +202,35 @@ function Player:destroy()
 end
 
 function Player:move(dx, dy)
-  local next_x, next_y = self.x + dx, self.y + dy
+  if dx == 0 and dy == 0 then
+    self.moving = false
+  else
+    local next_x, next_y = self.x + dx, self.y + dy
 
-  if next_x < world.bounds.x1 or next_x > world.bounds.x2 then
-    dx = 0
-  end
+    if next_x < world.bounds.x1 or next_x > world.bounds.x2 then
+      dx = 0
+    end
 
-  if next_y < world.bounds.y1 or next_y > world.bounds.y2 then
-    dy = 0
-  end
+    if next_y < world.bounds.y1 or next_y > world.bounds.y2 then
+      dy = 0
+    end
 
+    local block = world.checkBlockCollision(self.x, self.y, self.width, self.height)
+    if block then
+      if next_x < block.x + block.width or next_x + self.width > block.x then
+        dx = 0
+      end
 
-  if dx ~= 0 or dy ~= 0 then
+      if next_y < block.y + block.width or next_y + self.height > block.y then
+        dy = 0
+      end
+    end
+
+    self.moving = true
     if not self.dashing then
       self.x = self.x + dx
       self.y = self.y + dy
     end
-    self.moving = true
-  else
-    self.moving = false
   end
 end
 
