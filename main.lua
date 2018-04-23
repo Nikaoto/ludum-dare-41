@@ -20,7 +20,12 @@ TURN_DURATION = 3
 player_turn = "Player"
 enemy_turn = "Enemy"
 current_level = 1
+total_kills = 0
+total_turns = 0
+total_swings = 0
+swings_hit = 0
 score = 0
+won = false
 first_time = true
 game_started = false
 current_turn = player_turn
@@ -56,14 +61,7 @@ function love.load()
   tile.scale_y = tile.height / tile.actual_height
 
   turn_timer = Timer()
-  turn_timer_tag = turn_timer:every(TURN_DURATION, function()
-    sounds.play("turn")
-    if current_turn == player_turn then
-      current_turn = enemy_turn
-    else
-      current_turn = player_turn
-    end
-  end)
+  turn_timer_tag = turn_timer:every(TURN_DURATION, nextTurn)
 
   love.graphics.setFont(font)
 end
@@ -85,8 +83,16 @@ function love.draw()
   camera:draw()
   drawTurnTimer()
 
-  if first_time and not game_started then
-    drawIntroScreen()
+  if not game_started then
+    if first_time then
+      drawIntroScreen()  
+    else
+      if won then
+        drawWinScreen()
+      else
+        drawLoseScreen()
+      end
+    end
   end
 
   drawLevelOverlay()
@@ -107,18 +113,21 @@ function love.mousereleased(x, y, button)
   controls.mousereleased(x, y, button)
 end
 
+function nextTurn()
+  total_turns = total_turns + 1
+  sounds.play("turn")
+  if current_turn == player_turn then
+    current_turn = enemy_turn
+  else
+    current_turn = player_turn
+  end
+end
+
 function resetTurnTimer()
   if turn_timer then
     turn_timer:destroy()
     turn_timer = Timer()
-    turn_timer_tag = turn_timer:every(TURN_DURATION, function()
-      sounds.play("turn")
-      if current_turn == player_turn then
-        current_turn = enemy_turn
-      else
-        current_turn = player_turn
-      end
-    end)  
+    turn_timer_tag = turn_timer:every(TURN_DURATION, nextTurn)  
   end
 end
 
@@ -130,15 +139,47 @@ function drawLevelOverlay()
 end
 
 function drawIntroScreen()
-  local w, h = conf.window.width, conf.window.height
-  love.graphics.setColor(0, 0, 0, 0.9)
-  love.graphics.rectangle("fill", w/4, h/4, w/2, h/2)
-  love.graphics.setColor(1, 1, 1, 1)
+  drawMenuOverlay()
   -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
+  local w, h = conf.window.width, conf.window.height
   local scale = 1.8
   love.graphics.printf("Click anywhere to start", w*0.3, h*0.3, w/scale, 'left', 0, scale, scale)
   local instructions_text = "Move - WASD\nAim - Mouse\nSlash - Left Mouse Button\nDash - Right Mouse Button\n\n3 second turns\nKill them all"
   love.graphics.printf(instructions_text, w*0.3, h*0.4, w/scale, 'left', 0, scale, scale)
+end
+
+function drawWinScreen()
+  drawMenuOverlay()
+  -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
+  local w, h = conf.window.width, conf.window.height
+  local scale = 1.8
+  love.graphics.setColor(1, 0.843, 0)
+  love.graphics.printf("You win!", 0, h*0.3, w/scale, 'center', 0, scale, scale)
+  love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.printf("\n\nTotal kills: "..total_kills, 0, h*0.3, w/scale, 'center', 0, scale, scale)
+  love.graphics.printf("\n\n\nTotal turns: "..total_turns, 0, h*0.3, w/scale, 'center', 0, scale, scale)
+  love.graphics.printf("Click anywhere to proceed", 0, h*0.6, w/scale, 'center', 0, scale, scale)
+
+  love.graphics.setColor(1, 1, 1, 1)
+end
+
+function drawLoseScreen()
+  drawMenuOverlay()
+  -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
+  local w, h = conf.window.width, conf.window.height
+  local scale = 1.8
+  love.graphics.setColor(1, 0.843, 0)
+  love.graphics.printf("You died", 0, h*0.3, w/scale, 'center', 0, scale, scale)
+  love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.printf("\n\nTotal kills: "..total_kills, 0, h*0.3, w/scale, 'center', 0, scale, scale)
+  love.graphics.printf("\n\n\nTotal turns: "..total_turns, 0, h*0.3, w/scale, 'center', 0, scale, scale)
+  if total_swings ~= 0 then
+    local swing_accuracy = swings_hit/total_swings
+    swing_accuracy = (swing_accuracy - (swing_accuracy % 0.01))*100
+    love.graphics.printf("\n\n\n\nSwing accuracy: "..swing_accuracy.."%", 0, h*0.3, w/scale, 'center', 0, scale, scale)
+  end
+  love.graphics.printf("Click anywhere to retry", 0, h*0.6, w/scale, 'center', 0, scale, scale)
+  love.graphics.setColor(1, 1, 1, 1)
 end
 
 function drawTurnTimer()
@@ -163,11 +204,20 @@ function drawTurnTimer()
   love.graphics.printf(time_text, w/2-40, margin_top, w/scale, "left", 0, scale, scale)
 end
 
+
+--[[ Utils ]]
+
+function drawMenuOverlay()
+  local w, h = conf.window.width, conf.window.height
+  love.graphics.setColor(0, 0, 0, 0.9)
+  love.graphics.rectangle("fill", w/4, h/4, w/2, h/2)
+  love.graphics.setColor(1, 1, 1, 1)
+end
+
 function checkCollision(x1,y1,w1,h1, x2,y2,w2,h2)
   return x1 < x2+w2 and x2 < x1+w1 and y1 < y2+h2 and y2 < y1+h1
 end
 
---[[ Utils ]]
 function sq(n) return n*n end
 
 function drawCollider(obj)

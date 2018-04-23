@@ -7,7 +7,14 @@ world.bounds = {
   y2 = 1000
 }
 
-current_enemy_spawn = 3
+STARTING_ENEMY_SPAWN = 3
+
+current_enemy_spawn = STARTING_ENEMY_SPAWN
+
+function world.reset()
+  current_enemy_spawn = STARTING_ENEMY_SPAWN
+  world.load()
+end
 
 function world.load()
   math.randomseed(os.time())
@@ -37,6 +44,7 @@ function world.update(dt)
   for _, i in pairs(corpse_indexes) do
     if world.objects[i] and world.objects[i].dead then
       table.remove(world.objects, i)
+      total_kills = total_kills + 1
     end
   end
 
@@ -64,18 +72,24 @@ function world.draw()
   end
 end
 
+function world.lose()
+  game_started = false
+  won = false
+  world.reset()
+end
+
 function world.nextLevel()
   current_level = current_level + 1
   current_enemy_spawn = current_enemy_spawn + math.ceil(lume.random(current_level, current_level*2))
   game_started = false
+  won = true
   world.load()
 end
 
 function world.spawnPlayer()
   local margin = 100
-  player = Player(math.ceil(lume.random(
-    world.bounds.x1 + margin, world.bounds.y1 + margin, 
-    world.bounds.x2 - margin, world.bounds.y2 - margin)))
+  player = Player(math.ceil(lume.random(world.bounds.x1 + margin, world.bounds.x2 - margin)),
+    math.ceil(lume.random(world.bounds.y1 + margin, world.bounds.y2 - margin)))
 end
 
 

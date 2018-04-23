@@ -81,7 +81,6 @@ function Enemy:updateAI(dt)
     else
       -- wander around
       if world.checkOutOfBounds(self.x, self.y, self.width, self.height) then
-        print("bounds")
         self.move_direction = lume.random(math.pi*2)
       end
 
@@ -171,7 +170,6 @@ end
 function Enemy:takeDamage(amount)
   self.health = self.health - amount
   if self.health <= 0 then
-    print(self.name, "DEAD")
     self:destroy()
   end
 end

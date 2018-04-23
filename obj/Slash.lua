@@ -50,6 +50,9 @@ function Slash:new(args, callback)
 
   -- If hit, then add effects
   if hit_objects and #hit_objects ~= 0 then
+    if self.caller == "Player" then
+      swings_hit = swings_hit + 1
+    end
     sounds.play("slash_hit")
     self.color = {1, 0, 0}
     self.scale = self.scale + #hit_objects

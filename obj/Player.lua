@@ -49,8 +49,8 @@ function Player:getY() return self.y + self.oy end
 
 --[[ Constructor ]]
 function Player:new(x, y)
-  self.x = x or 400
-  self.y = y or 100
+  self.x = x
+  self.y = y
   self.width = 55
   self.height = 60
   self.ox = self.width/2
@@ -78,6 +78,7 @@ function Player:new(x, y)
 end
 
 function Player:update(dt)
+  --self:takeDamage(10) --temp
   if DISABLE_TURNS or not self.dead and current_turn == self.name then
     -- Set current animation
     if self.moving or self.dashing or self.nudging then
@@ -113,6 +114,7 @@ end
 
 --[[ Attack ]]
 function Player:attack(mouse_x, mouse_y)
+  total_swings = total_swings + 1
   -- Direction of slash
   local aim_angle = lume.angle(self:getX(), self:getY(), mouse_x, mouse_y)
   -- Slash location relative to self (if mouse aims closer, slash closer)
@@ -177,7 +179,6 @@ function Player:takeDamage(amount)
       self.health = self.health - amount
       camera:flash(0.05, {1, 0, 0, 0.3})
       if self.health <= 0 then
-        print(self.name, "DEAD")
         self:destroy()
       end
     end
@@ -192,6 +193,7 @@ function Player:destroy()
   self.dead = true
   self.swing_nudge:destroy()
   self.dash_timer:destroy()
+  world.lose()
 end
 
 function Player:move(dx, dy)

@@ -89,6 +89,9 @@ function controls.mousepressed(x, y, button)
     sounds.play("turn")
     game_started = true
     first_time = false
+    if not won then
+      world.reset()
+    end
   end
 end
 
