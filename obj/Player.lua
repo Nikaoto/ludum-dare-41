@@ -6,6 +6,7 @@ Player.NUDGE_TIME = 0.21
 Player.HEALTH = 100
 Player.DIRECT_DAMAGE = 10
 Player.SLASH_DAMAGE = 30
+Player.slash_distance = 100
 
 Player.spritesheet = love.graphics.newImage("res/player.png")
 Player.spritesheet:setFilter("nearest", "nearest")
@@ -119,7 +120,7 @@ function Player:attack(mouse_x, mouse_y)
   local aim_angle = lume.angle(self:getX(), self:getY(), mouse_x, mouse_y)
   -- Slash location relative to self (if mouse aims closer, slash closer)
   local sx, sy = lume.vector(aim_angle, 
-    math.sqrt(math.min(sq(self.x - mouse_x) + sq(self.y - mouse_y), sq(Slash.DISTANCE))))
+    math.sqrt(math.min(sq(self.x - mouse_x) + sq(self.y - mouse_y), sq(self.slash_distance))))
   -- Slash sprite rotation
   local rot = lume.random(math.pi)
   -- Swing

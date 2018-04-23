@@ -14,6 +14,7 @@ require "obj/Slash"
 require "obj/Sword"
 require "obj/Player"
 require "obj/Enemy"
+require "obj/Block"
 
 --[[ Global constants ]]
 TURN_DURATION = 3
@@ -38,8 +39,8 @@ font = love.graphics.newImageFont("res/imagefont.png",
 font:setFilter("nearest", "nearest")
 
 -- for testing
-DISABLE_TURNS = false
-INVINCIBLE = false
+DISABLE_TURNS = true
+INVINCIBLE = true
 
 function love.load()
   conf.load()

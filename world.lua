@@ -1,5 +1,6 @@
 world = {}
 world.objects = {}
+world.blocks = {}
 world.bounds = {
   x1 = 0,
   y1 = 0,
@@ -8,6 +9,7 @@ world.bounds = {
 }
 
 STARTING_ENEMY_SPAWN = 3
+ENEMYB_RATIO = 3
 
 current_enemy_spawn = STARTING_ENEMY_SPAWN
 
@@ -19,12 +21,19 @@ end
 function world.load()
   math.randomseed(os.time())
   world.objects = {}
+  world.blocks = {}
   resetTurnTimer()
   world.spawnPlayer()
 
   table.insert(world.objects, player)
+
   for i=1, current_enemy_spawn do
-    table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
+    if current_level > 3 and i % ENEMYB_RATIO == 0 then
+      table.insert(world.objects, EnemyB(lume.random(conf.window.width), lume.random(conf.window.height)))
+    else
+      table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
+      table.insert(world.blocks, Block(lume.random(conf.window.width), lume.random(conf.window.height)))
+    end
   end
 end
 
@@ -37,6 +46,12 @@ function world.update(dt)
       if obj.dead then
         table.insert(corpse_indexes, i)
       end
+    end
+  end
+
+  for i, block in pairs(world.blocks) do
+    if block.update then
+      block:update(dt)
     end
   end
 
@@ -70,6 +85,13 @@ function world.draw()
       obj:draw()
     end
   end
+
+  -- Blocks
+  for i, block in pairs(world.blocks) do
+    if block.draw then
+      block:draw()
+    end
+  end
 end
 
 function world.lose()
@@ -79,6 +101,7 @@ function world.lose()
 end
 
 function world.nextLevel()
+  sounds.play("win")
   current_level = current_level + 1
   current_enemy_spawn = current_enemy_spawn + math.ceil(lume.random(current_level, current_level*2))
   game_started = false
