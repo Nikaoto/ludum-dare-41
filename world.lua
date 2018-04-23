@@ -7,12 +7,15 @@ world.bounds = {
   y2 = 1000
 }
 
+current_enemy_spawn = 3
+
 function world.load()
   math.randomseed(os.time())
+  world.objects = {}
 
   player = Player()
   table.insert(world.objects, player)
-  for i=0, 5 do
+  for i=1, current_enemy_spawn do
     table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
   end
 end
@@ -31,7 +34,13 @@ function world.update(dt)
 
   -- Clear corpses
   for _, i in pairs(corpse_indexes) do
-    world.objects[i] = {}
+    table.remove(world.objects, i)
+  end
+
+  -- Check level finished (only player left)
+  if #world.objects == 1 then
+    print("DONE")
+    current_enemy_spawn = math.ceil(current_enemy_spawn * lume.random(2, current_enemy_spawn/2))
   end
 end
 

@@ -4,6 +4,8 @@ anim8 = require "lib/anim8"
 Timer = require "lib/Timer"
 Camera = require "lib/Camera"
 
+inspect = require "lib/inspect"
+
 require "conf"
 require "controls"
 require "world"
@@ -113,7 +115,6 @@ function drawMenu()
   love.graphics.printf("Click anywhere to start", w*0.3, h*0.3, w/scale, 'left', 0, scale, scale)
   local instructions_text = "Move - WASD\nAim - Mouse\nSlash - Left Mouse Button\nDash - Right Mouse Button\n\n3 second turns\nKill them all"
   love.graphics.printf(instructions_text, w*0.3, h*0.4, w/scale, 'left', 0, scale, scale)
-
 end
 
 function drawTurnTimer()
