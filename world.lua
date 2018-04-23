@@ -3,8 +3,8 @@ world.objects = {}
 world.bounds = {
   x1 = 0,
   y1 = 0,
-  x2 = 800,
-  y2 = 800
+  x2 = 1000,
+  y2 = 1000
 }
 
 function world.load()
@@ -12,7 +12,7 @@ function world.load()
 
   player = Player()
   table.insert(world.objects, player)
-  for i=0, 20 do
+  for i=0, 5 do
     table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
   end
 end
@@ -39,8 +39,8 @@ function world.draw()
   love.graphics.setColor(1, 1, 1)
 
   -- Floor
-  for x=0, conf.window.width + tile.width, tile.width do
-    for y=0, conf.window.height + tile.height, tile.height do
+  for x=0, world.bounds.x2, tile.width do
+    for y=0, world.bounds.y2, tile.height do
       love.graphics.draw(tile.sprite, x, y, 0, tile.scale_x, tile.scale_y)
     end
   end

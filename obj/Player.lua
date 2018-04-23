@@ -31,6 +31,16 @@ Player.run_grid = anim8.newGrid(Player.run_sprite_width, Player.run_sprite_heigh
 Player.run_animation = anim8.newAnimation(Player.run_grid("1-4",1, "1-4",2), 0.1)
 --]]
 
+--[[Player.spritesheet = love.graphics.newImage("res/run.png")
+Player.sheet_width = 376
+Player.sheet_height = 250
+Player.sprite_width = 376/4
+Player.sprite_height = 250/2
+Player.grid = anim8.newGrid(Player.sprite_width, Player.sprite_height, Player.sheet_width, Player.sheet_height)
+Player.idle_animation = anim8.newAnimation(Player.grid(1,1), 0.15)
+Player.run_animation = anim8.newAnimation(Player.grid("1-4",1, "1-4",2), 0.1)
+--]]
+
 --[[ Utils ]]
 function Player:getX() return self.x - self.ox end
 function Player:getY() return self.y - self.oy end
@@ -103,8 +113,9 @@ end
 function Player:attack(mouse_x, mouse_y)
   -- Direction of slash
   local aim_angle = lume.angle(self:getX(), self:getY(), mouse_x, mouse_y)
-  -- Slash location relative to self
-  local sx, sy = lume.vector(aim_angle, Slash.DISTANCE)
+  -- Slash location relative to self (if mouse aims closer, slash closer)
+  local sx, sy = lume.vector(aim_angle, 
+    math.sqrt(math.min(sq(self.x - mouse_x) + sq(self.y - mouse_y), sq(Slash.DISTANCE))))
   -- Slash sprite rotation
   local rot = lume.random(math.pi)
   -- Swing

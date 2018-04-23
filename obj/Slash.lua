@@ -8,7 +8,7 @@ Slash.SLASH_TIME = 0.21
 Slash.DISTANCE = 130
 Slash.SHAKE = 2
 Slash.COLOR = {1, 1, 1, 1}
-Slash.DAMAGE = 30
+Slash.DAMAGE = 20
 Slash.spritesheet = love.graphics.newImage("res/slash.png")
 Slash.sheet_width = 960
 Slash.sheet_height = 384
@@ -77,7 +77,7 @@ function Slash:draw()
   -- draw hitbox
   -- love.graphics.setColor(0, 1, 0)  
   -- love.graphics.rectangle("line", self.x-self.ox, self.y-self.oy, self.width, self.height)
-  
+
   if self.active then
     love.graphics.setColor(self.color)
     self.animation:draw(Slash.spritesheet, self.x, self.y, self.rotation, Slash.scale, Slash.scale, 

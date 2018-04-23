@@ -81,6 +81,7 @@ function Enemy:updateAI(dt)
     else
       -- wander around
       if world.checkOutOfBounds(self.x, self.y, self.width, self.height) then
+        print("bounds")
         self.move_direction = self.move_direction + math.pi/2
       end
 
