@@ -1,7 +1,7 @@
 Enemy = Object:extend()
 
 --[[ Global Constants ]]
-Enemy.STAND_CHANCE = 0.4
+Enemy.STAND_CHANCE = 0.35
 Enemy.HEALTH = 70
 Enemy.AGGRO_DISTANCE = 150
 Enemy.FLEE_DISTANCE = 250
@@ -39,7 +39,7 @@ function Enemy:new(x, y)
   self.move_direction = lume.random(math.pi)
   self.idle_move_speed = Enemy.IDLE_MOVE_SPEED
   self.aggro_move_speed = Enemy.AGGRO_MOVE_SPEED
-  self.standing = true
+  self.standing = false
   self.attacking = true
 
   self.sword = Sword(self.name)
@@ -100,7 +100,7 @@ function Enemy:moveTowardsPlayer(dt)
 
   if self:canAttackPlayer() then
     self.attack_timer:update(dt)
-    self:attackPlayer()
+    self:attackPlayer(dt)
   else
     self.attacking = false
   end
@@ -132,16 +132,19 @@ function Enemy:draw()
 end
 
 -- Swings towards player
-function Enemy:attackPlayer()
+function Enemy:attackPlayer(dt)
   if not self.attacking then
     self.attacking = true
     local aim_angle = lume.angle(player:getX(), player:getY(), self.x, self.y)
     local sx, sy = lume.vector(aim_angle, Enemy.ATTACK_DISTANCE)
     self.sword:swing(self:getX() + sx, self:getY() + sy, lume.random(math.pi))
 
-    self.attack_timer:after({1, 2}, function() 
+    self.attack_timer:after({1, 2}, function()
+      self.aggro_move_speed = Enemy.AGGRO_MOVE_SPEED
       self.attacking = false
     end)
+  else
+    self.aggro_move_speed = self.aggro_move_speed - self.aggro_move_speed*0.9*dt
   end
 end
 
