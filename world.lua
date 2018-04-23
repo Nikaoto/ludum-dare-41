@@ -10,6 +10,7 @@ world.bounds = {
 
 STARTING_ENEMY_SPAWN = 3
 ENEMYB_RATIO = 3
+BLOCK_RATIO = 4
 
 current_enemy_spawn = STARTING_ENEMY_SPAWN
 
@@ -28,11 +29,15 @@ function world.load()
   table.insert(world.objects, player)
 
   for i=1, current_enemy_spawn do
+    -- Blocks
+    if current_level > 2 and i % BLOCK_RATIO == 0 then
+      table.insert(world.blocks, Block(lume.random(conf.window.width), lume.random(conf.window.height)))
+    end
+    -- Enemies
     if current_level > 3 and i % ENEMYB_RATIO == 0 then
       table.insert(world.objects, EnemyB(lume.random(conf.window.width), lume.random(conf.window.height)))
     else
       table.insert(world.objects, Enemy(lume.random(conf.window.width), lume.random(conf.window.height)))
-      table.insert(world.blocks, Block(lume.random(conf.window.width), lume.random(conf.window.height)))
     end
   end
 end
@@ -70,6 +75,7 @@ function world.update(dt)
 end
 
 function world.draw()
+  love.graphics.clear(0.353, 0.404, 0.451, 0.9)
   love.graphics.setColor(1, 1, 1)
 
   -- Floor
@@ -95,6 +101,7 @@ function world.draw()
 end
 
 function world.lose()
+  sounds.play("lose")
   game_started = false
   won = false
   world.reset()

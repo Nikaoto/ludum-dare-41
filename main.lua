@@ -39,8 +39,8 @@ font = love.graphics.newImageFont("res/imagefont.png",
 font:setFilter("nearest", "nearest")
 
 -- for testing
-DISABLE_TURNS = true
-INVINCIBLE = true
+DISABLE_TURNS = false
+INVINCIBLE = false
 
 function love.load()
   conf.load()
