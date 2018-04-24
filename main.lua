@@ -4,8 +4,6 @@ anim8 = require "lib/anim8"
 Timer = require "lib/Timer"
 Camera = require "lib/Camera"
 
-inspect = require "lib/inspect"
-
 require "conf"
 require "controls"
 require "world"
