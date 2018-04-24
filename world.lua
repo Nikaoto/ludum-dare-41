@@ -124,7 +124,7 @@ end
 function world.nextLevel()
   sounds.play("win")
   current_level = current_level + 1
-  current_enemy_spawn = current_enemy_spawn + math.ceil(lume.random(current_level, current_level*1.5))
+  current_enemy_spawn = current_enemy_spawn + math.ceil(lume.random(current_level, current_level*1.1))
   game_started = false
   won = true
   world.load()
