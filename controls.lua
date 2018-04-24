@@ -91,6 +91,7 @@ function controls.mousepressed(x, y, button)
     first_time = false
     if not won then
       world.reset()
+      music:play()
     end
   end
 end
