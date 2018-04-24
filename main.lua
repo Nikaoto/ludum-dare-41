@@ -252,6 +252,6 @@ end
 function sq(n) return n*n end
 
 function drawCollider(obj)
-  love.graphics.setColor(1, 0, 0)
-  love.graphics.rectangle("line", obj.x, obj.y, obj.width, obj.height)
+  --love.graphics.setColor(1, 0, 0)
+  --love.graphics.rectangle("line", obj.x, obj.y, obj.width, obj.height)
 end
