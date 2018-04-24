@@ -10,6 +10,8 @@ conf.mouse = {
 }
 
 function love.conf(t)
+  t.window.title = "12Slash"
+  t.window.icon = "res/icon.png"
   t.window.width = conf.window.width
   t.window.height = conf.window.height
 end

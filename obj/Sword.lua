@@ -1,5 +1,3 @@
-package.path = package.path .. ";../?.lua"
-
 Sword = Object:extend()
 
 Sword.SHAKE = 4

@@ -1,3 +1,5 @@
+package.path = package.path .. ";../?.lua"
+
 Object = require "lib/classic"
 lume = require "lib/lume"
 anim8 = require "lib/anim8"
