@@ -1,11 +1,12 @@
 world = {}
 world.objects = {}
 world.blocks = {}
+START_BOUND = 600
 world.bounds = {
   x1 = 0,
   y1 = 0,
-  x2 = 600,
-  y2 = 600
+  x2 = START_BOUND,
+  y2 = START_BOUND
 }
 
 STARTING_ENEMY_SPAWN = 3
@@ -17,6 +18,12 @@ current_enemy_spawn = STARTING_ENEMY_SPAWN
 function world.reset()
   current_enemy_spawn = STARTING_ENEMY_SPAWN
   current_level = 1
+  world.bounds = {
+    x1 = 0,
+    y1 = 0,
+    x2 = START_BOUND,
+    y2 = START_BOUND
+  }
   world.load()
 end
 

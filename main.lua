@@ -1,5 +1,3 @@
-package.path = package.path .. ";../?.lua"
-
 Object = require "lib/classic"
 lume = require "lib/lume"
 anim8 = require "lib/anim8"
@@ -35,18 +33,19 @@ first_time = true
 game_started = false
 current_turn = player_turn
 
--- Load font
-font = love.graphics.newImageFont("res/imagefont.png",
-    " abcdefghijklmnopqrstuvwxyz" ..
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
-    "123456789.,!?-+/():;%&`'*#=[]\"")
-font:setFilter("nearest", "nearest")
 
 -- Music
 MUSIC_VOLUME = 0.35
 music = love.audio.newSource("res/bgmusic.mp3", "stream")
 music:setLooping(true)
 music:setVolume(MUSIC_VOLUME)
+
+-- Load font
+font = love.graphics.newImageFont("res/imageFont.png",
+    " abcdefghijklmnopqrstuvwxyz" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+    "123456789.,!?-+/():;%&`'*#=[]\"")
+font:setFilter("nearest", "nearest")
 
 -- for testing
 DISABLE_TURNS = false
