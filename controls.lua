@@ -96,6 +96,16 @@ function controls.mousepressed(x, y, button)
   end
 end
 
+function controls.keypressed(key, scancode)
+  if scancode == "lshift" then
+    if game_started then
+      if not player.dead and current_turn == player_turn or DISABLE_TURNS then
+        player:dash(controls.mouse_x, controls.mouse_y)
+      end
+    end
+  end
+end
+
 function controls.mousereleased(x, y, button)
   if current_turn == player_turn or DISABLE_TURNS then
     --print("controls.mousereleased("..x..", "..y..", "..button..")")

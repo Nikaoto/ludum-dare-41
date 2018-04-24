@@ -54,7 +54,8 @@ INVINCIBLE = false
 function love.load()
   conf.load()
 
-  camera = Camera()
+  local sw, sh = love.graphics.getDimensions()
+  camera = Camera(conf.window.width, conf.window.height, sw, sh)
   camera:setFollowLerp(0.1)
   camera:setFollowStyle("LOCKON")
 
@@ -75,6 +76,8 @@ function love.load()
   turn_timer_tag = turn_timer:every(TURN_DURATION, nextTurn)
 
   love.graphics.setFont(font)
+  canvas = love.graphics.newCanvas(800, 600)
+
   music:play()
 end
 
@@ -89,6 +92,11 @@ function love.update(dt)
 end
 
 function love.draw()
+  if conf.window.fullscreen then
+    love.graphics.setCanvas(canvas)
+    love.graphics.clear()
+  end
+  --
   camera:attach()
   world.draw()
   camera:detach()
@@ -109,12 +117,32 @@ function love.draw()
 
   drawLevelOverlay()
   controls.drawMouse()
+  --
+  if conf.window.fullscreen then
+    love.graphics.setCanvas()
+    
+    -- Draw the 400x300 canvas scaled by 2 to a 800x600 screen
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setBlendMode('alpha', 'premultiplied')
+    local w, h = love.graphics.getDimensions()
+    local screen_scale = h/conf.window.height
+    local offset = w/2 - conf.window.width * screen_scale/2
+    love.graphics.draw(canvas, offset, 0, 0, screen_scale, screen_scale)
+    love.graphics.setBlendMode('alpha')
+  end
 end
 
-function love.keypressed(k)
+function love.keypressed(k, s)
   if k == "escape" then
     love.event.quit()
   end
+
+  if k == "f" then
+    conf.window.fullscreen = not conf.window.fullscreen
+    love.window.setFullscreen(conf.window.fullscreen)
+  end
+
+  controls.keypressed(key, s)
 end
 
 function love.mousepressed(x, y, button)
@@ -174,7 +202,7 @@ function drawIntroScreen()
   drawMenuOverlay()
   -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
   local w, h = conf.window.width, conf.window.height
-  local scale = 1.8
+  local scale = 1.4
   love.graphics.printf("Click anywhere to start", w*0.3, h*0.3, w/scale, 'left', 0, scale, scale)
   local instructions_text = "Move - WASD\nAim - Mouse\nSlash - Left Mouse Button\nDash - Right Mouse Button\n\n3 second turns\nDash when stuck in blocks\nKill them all"
   love.graphics.printf(instructions_text, w*0.3, h*0.4, w/scale, 'left', 0, scale, scale)
@@ -184,7 +212,7 @@ function drawWinScreen()
   drawMenuOverlay()
   -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
   local w, h = conf.window.width, conf.window.height
-  local scale = 1.8
+  local scale = 1.4
   love.graphics.setColor(1, 0.843, 0)
   love.graphics.printf("You win!", 0, h*0.3, w/scale, 'center', 0, scale, scale)
   love.graphics.setColor(1, 1, 1, 1)
@@ -199,7 +227,7 @@ function drawLoseScreen()
   drawMenuOverlay()
   -- NOTE: DO NOT CROSS 0.25 and 0.75 screen width with text
   local w, h = conf.window.width, conf.window.height
-  local scale = 1.8
+  local scale = 1.4
   love.graphics.setColor(1, 0.843, 0)
   love.graphics.printf("You died", 0, h*0.3, w/scale, 'center', 0, scale, scale)
   love.graphics.setColor(1, 1, 1, 1)
