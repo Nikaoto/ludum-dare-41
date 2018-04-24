@@ -76,13 +76,16 @@ function EnemyB:updateAI(dt)
       self.current_animation = self.idle_animation
     else
       -- wander around
-      if world.checkOutOfBounds(self.x, self.y, self.width, self.height) then
-        self.move_direction = lume.random(math.pi*2)
-      end
-
-      local dx, dy = lume.vector(self.move_direction, self.idle_move_speed)
-      self:move(dx * dt, dy * dt)
       self.current_animation = self.run_animation
+      local dx, dy = lume.vector(self.move_direction, self.idle_move_speed)
+      local next_x, next_y = self.x + dx*dt, self.y + dy*dt
+
+      if world.checkOutOfBounds(next_x, next_y, self.width, self.height) then
+        self:move(-dx*dt, -dy*dt)
+        self.move_direction = lume.random(-math.pi, math.pi)
+      else
+        self:move(dx*dt, dy*dt)  
+      end
     end
   end
 end
