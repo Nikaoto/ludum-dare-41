@@ -40,6 +40,12 @@ font = love.graphics.newImageFont("res/imagefont.png",
     "123456789.,!?-+/():;%&`'*#=[]\"")
 font:setFilter("nearest", "nearest")
 
+-- Music
+MUSIC_VOLUME = 0.35
+music = love.audio.newSource("res/bgmusic.mp3", "stream")
+music:setLooping(true)
+music:setVolume(MUSIC_VOLUME)
+
 -- for testing
 DISABLE_TURNS = false
 INVINCIBLE = false
@@ -68,6 +74,7 @@ function love.load()
   turn_timer_tag = turn_timer:every(TURN_DURATION, nextTurn)
 
   love.graphics.setFont(font)
+  music:play()
 end
 
 function love.update(dt)

@@ -15,6 +15,7 @@ BLOCK_RATIO = 4
 current_enemy_spawn = STARTING_ENEMY_SPAWN
 
 function world.reset()
+  music:play()
   current_enemy_spawn = STARTING_ENEMY_SPAWN
   current_level = 1
   world.load()
@@ -116,6 +117,7 @@ function world.lose()
   sounds.play("lose")
   game_started = false
   won = false
+  music:stop()
   world.reset()
 end
 

@@ -7,6 +7,13 @@ sounds = {
   ["lose"] = love.audio.newSource("res/lose.wav", "static")
 }
 
+-- Adjust volume
+for _, s in pairs(sounds) do
+  s:setVolume(0.7)
+end
+sounds["slash"]:setVolume(1)
+sounds["dash"]:setVolume(1)
+
 sounds.play = function(sound_name)
   if sounds[sound_name] then
     if sounds[sound_name]:isPlaying() then
