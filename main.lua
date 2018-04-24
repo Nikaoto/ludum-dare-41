@@ -32,7 +32,7 @@ won = false
 first_time = true
 game_started = false
 current_turn = player_turn
-
+screen_scale = 1
 
 -- Music
 MUSIC_VOLUME = 0.35
@@ -56,6 +56,7 @@ function love.load()
 
   local sw, sh = love.graphics.getDimensions()
   camera = Camera(conf.window.width, conf.window.height, sw, sh)
+
   camera:setFollowLerp(0.1)
   camera:setFollowStyle("LOCKON")
 
@@ -76,7 +77,7 @@ function love.load()
   turn_timer_tag = turn_timer:every(TURN_DURATION, nextTurn)
 
   love.graphics.setFont(font)
-  canvas = love.graphics.newCanvas(800, 600)
+  canvas = love.graphics.newCanvas(conf.window.width, conf.window.height)
 
   music:play()
 end
@@ -116,20 +117,19 @@ function love.draw()
   end
 
   drawLevelOverlay()
-  controls.drawMouse()
   --
   if conf.window.fullscreen then
     love.graphics.setCanvas()
     
-    -- Draw the 400x300 canvas scaled by 2 to a 800x600 screen
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setBlendMode('alpha', 'premultiplied')
     local w, h = love.graphics.getDimensions()
-    local screen_scale = h/conf.window.height
-    local offset = w/2 - conf.window.width * screen_scale/2
+    screen_scale = h/conf.window.height
+    local offset = math.floor(w/2 - conf.window.width * screen_scale/2)
     love.graphics.draw(canvas, offset, 0, 0, screen_scale, screen_scale)
     love.graphics.setBlendMode('alpha')
   end
+  controls.drawMouse(screen_scale)
 end
 
 function love.keypressed(k, s)
@@ -140,6 +140,7 @@ function love.keypressed(k, s)
   if k == "f" then
     conf.window.fullscreen = not conf.window.fullscreen
     love.window.setFullscreen(conf.window.fullscreen)
+    screen_scale = 1
   end
 
   controls.keypressed(key, s)

@@ -12,12 +12,14 @@ speed = 450
 
 --[[ Utils ]]
 local isDown = function(key) return love.keyboard.isDown(key) end
-local transform_mouse_position = function(x, y) 
-  return (x - conf.window.width / 2), (y - conf.window.height / 2) 
-end
 
 local getMousePosition = function(px, py, mx, my)
-  return (px + mx - conf.window.width/2), (py + my - conf.window.height/2)
+  if conf.window.fullscreen then
+    local w, h = love.graphics.getDimensions()
+    return (px + mx - w/2), (py + my - h/2)
+  else
+    return (px + mx - conf.window.width/2), (py + my - conf.window.height/2)
+  end
 end
 
 
@@ -113,20 +115,26 @@ function controls.mousereleased(x, y, button)
 end
 
 --[[ Draw Mouse]]
-function controls.drawMouse()
+function controls.drawMouse(screen_scale)
+  local s = screen_scale or 1
   -- Update mouse position
   local mx, my = love.mouse.getPosition()
   controls.mouse_x, controls.mouse_y = getMousePosition(player.x, player.y, mx, my)
 
   local mouse_x, mouse_y = love.mouse.getPosition()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.circle("line", mouse_x, mouse_y, CROSSHAIR_RADIUS, CROSSHAIR_SEGMENTS)
+  love.graphics.circle("line", mouse_x, mouse_y, s*CROSSHAIR_RADIUS, CROSSHAIR_SEGMENTS)
 
   love.graphics.setColor(0, 0, 0)
-  love.graphics.circle("line", mouse_x, mouse_y, CROSSHAIR_RADIUS * 0.9, CROSSHAIR_SEGMENTS)
-  love.graphics.circle("line", mouse_x, mouse_y, CROSSHAIR_RADIUS * 0.8, CROSSHAIR_SEGMENTS)
-  love.graphics.circle("line", mouse_x, mouse_y, CROSSHAIR_RADIUS * 0.7, CROSSHAIR_SEGMENTS)
+  local w = 3 * s
+  for i=1, w do
+    local r = s*CROSSHAIR_RADIUS * (1 - i/10/s)
+    love.graphics.circle("line", mouse_x, mouse_y, r, CROSSHAIR_SEGMENTS)
+  end
+  
+  -- love.graphics.circle("line", mouse_x, mouse_y, s*CROSSHAIR_RADIUS * 0.8, CROSSHAIR_SEGMENTS)
+  -- love.graphics.circle("line", mouse_x, mouse_y, s*CROSSHAIR_RADIUS * 0.7, CROSSHAIR_SEGMENTS)
 
   love.graphics.setColor(1, 1, 1)
-  love.graphics.circle("line", mouse_x, mouse_y, CROSSHAIR_RADIUS * 0.6, CROSSHAIR_SEGMENTS)
+  love.graphics.circle("line", mouse_x, mouse_y, s*CROSSHAIR_RADIUS * 0.6, CROSSHAIR_SEGMENTS)
 end
