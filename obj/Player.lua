@@ -52,8 +52,8 @@ function Player:getY() return self.y + self.oy end
 function Player:new(x, y)
   self.x = x
   self.y = y
-  self.width = 55
-  self.height = 60
+  self.width = 45
+  self.height = 52
   self.ox = self.width/2
   self.oy = self.height/2
   self.name = "Player"

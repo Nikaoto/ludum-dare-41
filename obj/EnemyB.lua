@@ -29,8 +29,8 @@ function EnemyB:new(x, y)
   self.x = x
   self.y = y
   self.name = "Enemy"
-  self.width = 55
-  self.height = 60
+  self.width = 45
+  self.height = 52
   self.health = EnemyB.HEALTH
 
   self.ox = self.width/2

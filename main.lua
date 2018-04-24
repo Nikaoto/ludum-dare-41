@@ -123,9 +123,13 @@ function love.draw()
     
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setBlendMode('alpha', 'premultiplied')
-    local w, h = love.graphics.getDimensions()
-    screen_scale = h/conf.window.height
-    local offset = math.floor(w/2 - conf.window.width * screen_scale/2)
+    local temp_w, temp_h = love.graphics.getDimensions()
+
+    local small_w, small_h = math.min(temp_w, conf.window.width), math.min(temp_h, conf.window.height)
+    local big_w, big_h = math.max(temp_w, conf.window.width), math.max(temp_h, conf.window.height)
+
+    screen_scale = big_h/small_h
+    local offset = math.floor(big_w/2 - small_w * screen_scale/2)
     love.graphics.draw(canvas, offset, 0, 0, screen_scale, screen_scale)
     love.graphics.setBlendMode('alpha')
   end
